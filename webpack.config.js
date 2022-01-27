@@ -6,6 +6,7 @@ module.exports = {
 	output: {
 		filename: 'bundle.js',
 		path: path.resolve(__dirname, 'public'),
+		publicPath: '/public/',
 	},
 	resolve: {
 		extensions: ['.ts', '.js'],
@@ -15,6 +16,7 @@ module.exports = {
 			{
 				test: /\.ts$/,
 				use: 'ts-loader',
+				include: path.join(__dirname, 'ts'),
 			},
 		],
 	},
