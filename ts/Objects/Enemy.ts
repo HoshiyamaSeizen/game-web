@@ -21,6 +21,7 @@ export class Enemy extends GameObject implements Entity {
 		this.maxHealth = maxHealth;
 		this.armor = armor;
 		this.damage = damage;
+		this.reward = reward;
 		this.strategy = null;
 		this.name = '';
 	}
@@ -88,7 +89,7 @@ export class Enemy extends GameObject implements Entity {
 		return this.reward;
 	}
 	public clone(): Entity {
-		let newEnemy = new Enemy(this.maxHealth, this.armor, this.damage);
+		let newEnemy = new Enemy(this.maxHealth, this.armor, this.damage, this.reward);
 		newEnemy.strategy = this.strategy!.clone(newEnemy);
 		newEnemy.sprite = this.sprite!;
 		newEnemy.prevDir = this.prevDir;
