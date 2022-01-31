@@ -1,0 +1,40 @@
+[
+	{
+		"name": "Iron_Sword",
+		"type": "weapon",
+		"dam": 10,
+		"cost": 3,
+		"dur": 2,
+		"money": 0
+	},
+	{
+		"name": "Fire_Spell",
+		"type": "spell",
+		"dam": 50,
+		"cost": 10,
+		"charges": 1,
+		"money": 0
+	},
+	{
+		"name": "Water_Spell",
+		"type": "spell",
+		"dam": 10,
+		"cost": 5,
+		"charges": 1,
+		"money": 0
+	},
+	{
+		"name": "Leather_Armor",
+		"type": "armor",
+		"armor": 10,
+		"dur": 5,
+		"money": 0
+	},
+	{
+		"name": "Healing_Potion",
+		"type": "potion",
+		"pType": "HP",
+		"amount": 50,
+		"money": 0
+	}
+]

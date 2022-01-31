@@ -1,0 +1,34 @@
+[
+	{
+		"name": "Zombie",
+		"strategy": "wander",
+		"hp": 100,
+		"def": 10,
+		"dam": 1,
+		"money": 10
+	},
+	{
+		"name": "Ghost",
+		"strategy": "patrol",
+		"hp": 50,
+		"def": 100,
+		"dam": 50,
+		"money": 10
+	},
+	{
+		"name": "Hell-Hound",
+		"strategy": "hunt",
+		"hp": 100,
+		"def": 10,
+		"dam": 10,
+		"money": 10
+	},
+	{
+		"name": "Knight",
+		"strategy": "guard",
+		"hp": 100,
+		"def": 10,
+		"dam": 10,
+		"money": 100
+	}
+]

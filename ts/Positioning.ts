@@ -16,11 +16,11 @@ export class Position {
 		this.x = x;
 		this.y = y;
 	}
-	public equal(other: Position): Boolean {
+	public equals(other: Position): Boolean {
 		return this.x == other.x && this.y == other.y;
 	}
 	public compare(other: Position): number {
-		if (this.equal(other)) return 0;
+		if (this.equals(other)) return 0;
 		else return this.x < other.x || (this.x == other.x && this.y < other.y) ? -1 : 1;
 	}
 	public toString(): string {
@@ -33,7 +33,8 @@ export type Size = {
 	height: number;
 };
 
-export const changePos = (pos: Position, dir: Direction): Position => {
+export const changePos = (_pos: Position, dir: Direction): Position => {
+	let pos = new Position(_pos.x, _pos.y);
 	switch (dir) {
 		case Direction.N:
 			pos.y--;
@@ -97,6 +98,10 @@ export const findDir = (prev: Position, next: Position): Direction => {
 	else if (dx == 0 && dy < 0) return Direction.N;
 	else if (dx > 0 && dy < 0) return Direction.NE;
 	else return Direction.E;
+};
+
+export const posNear = (pos1: Position, pos2: Position): Boolean => {
+	return Math.abs(pos1.x - pos2.x) <= 1 && Math.abs(pos1.y - pos2.y) <= 1;
 };
 
 export const randDir = (): Direction => {

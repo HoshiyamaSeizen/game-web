@@ -1,3 +1,5 @@
+import { Item } from './../Objects/Item';
+import { Entity } from './../Objects/Entity';
 import { Position } from './../Positioning';
 import { Cell } from './Cell';
 
@@ -47,5 +49,23 @@ export class Field {
 			output += '\n';
 		}
 		console.log(output);
+	}
+	public removeEntity(entity: Entity): void {
+		for (let i = 0; i < this.width; i++) {
+			for (let j = 0; j < this.height; j++) {
+				if (this.cells[i][j].getEntity() == entity) {
+					this.cells[i][j].setEntity(null);
+				}
+			}
+		}
+	}
+	public removeItem(item: Item): void {
+		for (let i = 0; i < this.width; i++) {
+			for (let j = 0; j < this.height; j++) {
+				if (this.cells[i][j].getItem() == item) {
+					this.cells[i][j].setItem(null);
+				}
+			}
+		}
 	}
 }

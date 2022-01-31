@@ -1,3 +1,5 @@
+import { Game } from './../Game';
+import { Enemy } from './../Objects/Enemy';
 import { AssetStorage, Sprite } from './../Storage';
 import { Position } from './../Positioning';
 import { Entity } from './../Objects/Entity';
@@ -52,10 +54,12 @@ export class FieldBuilder implements Builder {
 	public setEntity(ent: Entity, pos: Position): void {
 		this.field.cellAt(pos).setEntity(ent);
 		ent.setPos(pos);
+		if (!this.fromSave) Game.getInstance().addEntity(ent);
 	}
 	public setItem(item: Item, pos: Position): void {
 		this.field.cellAt(pos).setItem(item);
 		item.setPos(pos);
+		if (!this.fromSave) Game.getInstance().addItem(item);
 	}
 	public canItemBeSet(pos: Position): Boolean {
 		return this.field.isInField(pos) && !this.field.cellAt(pos).hasItem();
@@ -73,7 +77,9 @@ export class FieldBuilder implements Builder {
 		this.setSize(map.width, map.height);
 
 		// Enemies
+		let enemies = [...map.enemies.reverse()];
 		// Items
+		let items = [...map.items.reverse()];
 
 		// Layout
 		map.layout.forEach((row, j) => {
@@ -92,16 +98,17 @@ export class FieldBuilder implements Builder {
 						this.toggleCellAccessibility(new Position(i, j));
 						break;
 					case 'e':
-						// if(!fromSave){
-						// 	this.setEntity(enemyMap[enemies.front()].clone(), new Position(i, j));
-						// 	enemies.pop();
-						// }
+						if (!this.fromSave) {
+							this.setEntity(
+								assets.getEnemies().get(enemies.pop()!)!.clone(),
+								new Position(i, j)
+							);
+						}
 						break;
 					case 'i':
-						// if(!fromSave){
-						// 	this.setItem(itemMap[items.front()].clone(), new Position(i, j));
-						// 	items.pop();
-						// }
+						if (!this.fromSave) {
+							this.setItem(assets.getItems().get(items.pop()!)!.clone(), new Position(i, j));
+						}
 						break;
 					default:
 						break;

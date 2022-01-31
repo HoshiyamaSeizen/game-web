@@ -1,3 +1,4 @@
+import { NPC } from './../Objects/NPC';
 import { Drawable } from './../Objects/Drawable';
 import { Enemy } from './../Objects/Enemy';
 import { Player } from './../Objects/Player';
@@ -42,13 +43,16 @@ export class Cell extends Drawable {
 		return this.item != null && this.isAccessible();
 	}
 	public isFree(): Boolean {
-		return this.entity != null && this.isAccessible();
+		return this.entity == null && this.isAccessible();
 	}
 	public isEntityPlayer(): Boolean {
 		return this.entity instanceof Player;
 	}
 	public isEntityEnemy(): Boolean {
 		return this.entity instanceof Enemy;
+	}
+	public isEntityNPC(): Boolean {
+		return this.entity instanceof NPC;
 	}
 	public isStart(): Boolean {
 		return this.state == State.start;
@@ -60,10 +64,10 @@ export class Cell extends Drawable {
 		return this.accessible;
 	}
 
-	public setEntity(entity: Entity): void {
+	public setEntity(entity: Entity | null): void {
 		this.entity = entity;
 	}
-	public setItem(item: Item): void {
+	public setItem(item: Item | null): void {
 		this.item = item;
 	}
 	public setState(state: State): void {

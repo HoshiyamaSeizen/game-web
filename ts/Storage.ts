@@ -1,3 +1,5 @@
+import { EnemyBuilder } from './Builders/EnemyBuilder';
+import { ItemBuilder } from './Builders/ItemBuilder';
 import { Position } from './Positioning';
 import { Item } from './Objects/Item';
 import { Enemy } from './Objects/Enemy';
@@ -25,8 +27,24 @@ export class AssetStorage {
 		});
 		console.log('\n');
 	}
-	public readEnemies(): void {}
-	public readItems(): void {}
+	public readEnemies(): void {
+		let ebuilder = new EnemyBuilder();
+		console.log('Reading enemies: ');
+		ebuilder.getEnemyList().forEach((name) => {
+			this.enemies.set(name, ebuilder.getPresetEnemy(name));
+			console.log(`\t${name}`);
+		});
+		console.log('\n');
+	}
+	public readItems(): void {
+		let ibuilder = new ItemBuilder();
+		console.log('Reading items: ');
+		ibuilder.getItemList().forEach((name) => {
+			this.items.set(name, ibuilder.getPresetItem(name));
+			console.log(`\t${name}`);
+		});
+		console.log('\n');
+	}
 
 	public getTilesheets(): Map<string, HTMLImageElement> {
 		return this.tilesheets;
@@ -39,12 +57,12 @@ export class AssetStorage {
 	}
 
 	public checkTexture(key: string): Boolean {
-		return true;
+		return this.tilesheets.has(key);
 	}
 	public checkEnemy(key: string): Boolean {
-		return true;
+		return this.enemies.has(key);
 	}
 	public checkItem(key: string): Boolean {
-		return true;
+		return this.items.has(key);
 	}
 }
