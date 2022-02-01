@@ -24,12 +24,13 @@ export enum ACTION {
 }
 
 export class Controller {
-	private controls: { [key: string]: number };
+	private controls: { [key: string]: string };
 	private action: ACTION | null = null;
 	private dir: Direction | null = null;
-	private pressed: Set<number>;
-	private currentlyPressed: Set<number>;
+	private pressed: Set<string>;
+	private currentlyPressed: Set<string>;
 	private actionGiven: Boolean;
+	private menuOpened = true;
 	private isKeyPressed(action: ACTION): Boolean {
 		return this.pressed.has(this.controls[<string>action]);
 	}
@@ -56,7 +57,11 @@ export class Controller {
 			else if (this.isKeyPressed(ACTION.DROP_P)) this.action = ACTION.DROP_P;
 			else if (this.isKeyPressed(ACTION.QSAVE)) this.action = ACTION.QSAVE;
 			else if (this.isKeyPressed(ACTION.QLOAD)) this.action = ACTION.QLOAD;
+			// Service
 			else {
+				// Menu
+				if (this.pressed.has('Escape')) {
+				}
 				// console
 				this.actionGiven = false;
 			}
@@ -76,7 +81,7 @@ export class Controller {
 	}
 	public readInput(e: Event, keyDown = true) {
 		if (e instanceof KeyboardEvent) {
-			let code = e.which;
+			let code = e.code;
 			if (keyDown) {
 				if (e.ctrlKey || e.altKey) return;
 				this.pressed.add(code);
