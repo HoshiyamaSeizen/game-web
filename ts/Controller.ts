@@ -30,40 +30,47 @@ export class Controller {
 	private pressed: Set<string>;
 	private currentlyPressed: Set<string>;
 	private actionGiven: Boolean;
-	private menuOpened = true;
 	private isKeyPressed(action: ACTION): Boolean {
 		return this.pressed.has(this.controls[<string>action]);
 	}
 	private processInput(): void {
-		this.actionGiven = true;
+		let menu = Game.getInstance().getMenu();
+		if (!menu.opened()) {
+			this.actionGiven = true;
 
-		let Ndir = this.isKeyPressed(ACTION.UP);
-		let Edir = this.isKeyPressed(ACTION.RIGHT);
-		let Sdir = this.isKeyPressed(ACTION.DOWN);
-		let Wdir = this.isKeyPressed(ACTION.LEFT);
-		this.dir = CalcDir(Ndir, Edir, Sdir, Wdir);
+			let Ndir = this.isKeyPressed(ACTION.UP);
+			let Edir = this.isKeyPressed(ACTION.RIGHT);
+			let Sdir = this.isKeyPressed(ACTION.DOWN);
+			let Wdir = this.isKeyPressed(ACTION.LEFT);
+			this.dir = CalcDir(Ndir, Edir, Sdir, Wdir);
 
-		if (this.dir !== null) {
-			if (this.isKeyPressed(ACTION.HIT)) this.action = ACTION.HIT;
-			else if (this.isKeyPressed(ACTION.CAST)) this.action = ACTION.CAST;
-			else this.action = ACTION.MOVE;
-		} else {
-			if (this.isKeyPressed(ACTION.SLEEP)) this.action = ACTION.SLEEP;
-			else if (this.isKeyPressed(ACTION.PICK_UP)) this.action = ACTION.PICK_UP;
-			else if (this.isKeyPressed(ACTION.BUFF)) this.action = ACTION.BUFF;
-			else if (this.isKeyPressed(ACTION.DROP_W)) this.action = ACTION.DROP_W;
-			else if (this.isKeyPressed(ACTION.DROP_S)) this.action = ACTION.DROP_S;
-			else if (this.isKeyPressed(ACTION.DROP_A)) this.action = ACTION.DROP_A;
-			else if (this.isKeyPressed(ACTION.DROP_P)) this.action = ACTION.DROP_P;
-			else if (this.isKeyPressed(ACTION.QSAVE)) this.action = ACTION.QSAVE;
-			else if (this.isKeyPressed(ACTION.QLOAD)) this.action = ACTION.QLOAD;
-			// Service
-			else {
-				// Menu
-				if (this.pressed.has('Escape')) {
+			if (this.dir !== null) {
+				if (this.isKeyPressed(ACTION.HIT)) this.action = ACTION.HIT;
+				else if (this.isKeyPressed(ACTION.CAST)) this.action = ACTION.CAST;
+				else this.action = ACTION.MOVE;
+			} else {
+				if (this.isKeyPressed(ACTION.SLEEP)) this.action = ACTION.SLEEP;
+				else if (this.isKeyPressed(ACTION.PICK_UP)) this.action = ACTION.PICK_UP;
+				else if (this.isKeyPressed(ACTION.BUFF)) this.action = ACTION.BUFF;
+				else if (this.isKeyPressed(ACTION.DROP_W)) this.action = ACTION.DROP_W;
+				else if (this.isKeyPressed(ACTION.DROP_S)) this.action = ACTION.DROP_S;
+				else if (this.isKeyPressed(ACTION.DROP_A)) this.action = ACTION.DROP_A;
+				else if (this.isKeyPressed(ACTION.DROP_P)) this.action = ACTION.DROP_P;
+				else if (this.isKeyPressed(ACTION.QSAVE)) this.action = ACTION.QSAVE;
+				else if (this.isKeyPressed(ACTION.QLOAD)) this.action = ACTION.QLOAD;
+				// Service
+				else {
+					// Menu
+					if (this.pressed.has('Escape')) {
+						menu.toggle();
+					}
+					// console
+					this.actionGiven = false;
 				}
-				// console
-				this.actionGiven = false;
+			}
+		} else {
+			if (this.pressed.has('Escape') && Game.getInstance().hasStarted()) {
+				menu.toggle();
 			}
 		}
 	}

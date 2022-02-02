@@ -1,3 +1,13 @@
+@font-face {
+	font-family: Pixeboy;
+	src: url('./assets/Pixeboy.ttf');
+}
+
+@font-face {
+	font-family: PixeloidSans;
+	src: url('./assets/PixeloidSans.ttf');
+}
+
 html,
 body {
 	margin: 0 !important;
@@ -22,6 +32,10 @@ body {
 	transform: translate(-50%, -50%);
 	background-color: blanchedalmond;
 	z-index: 1;
+}
+
+button.selected {
+	background: rgb(228, 193, 193);
 }
 
 #game-console {

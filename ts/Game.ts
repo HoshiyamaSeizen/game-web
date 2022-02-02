@@ -1,3 +1,5 @@
+import { initStartRules } from './Rules/RuleChecker';
+import { GameRule } from './Rules/GameRule';
 import { Enemy } from './Objects/Enemy';
 import { FieldBuilder } from './Builders/FieldBuilder';
 import { Position } from './Positioning';
@@ -10,6 +12,7 @@ import { Item } from './Objects/Item';
 import { Entity } from './Objects/Entity';
 import { Player } from './Objects/Player';
 import { Field } from './Map/Field';
+import { Menu } from './Menu';
 
 export class Game {
 	private static instance: Game | null = null;
@@ -20,9 +23,13 @@ export class Game {
 		this.entities = [];
 		this.items = [];
 		this.events = [];
+		this.startRules = [];
+		this.finishRules = [];
 		this.move = 0;
+		this.gameStarted = false;
 	}
 
+	private gameStarted: Boolean;
 	private gameActive: Boolean;
 	private playersTurn: Boolean;
 	private currentMap: string | null = null;
@@ -34,10 +41,12 @@ export class Game {
 	private events: GameEvent[];
 	private assets: AssetStorage | null = null;
 	private saveManager: SaveManager | null = null;
-	// private logger: Logger
+	private menu: Menu | null = null;
 	private controller: Controller | null = null;
 	private drawer: Drawer | null = null;
 	private move: number;
+	private startRules: GameRule[];
+	private finishRules: GameRule[];
 
 	public static getInstance(): Game {
 		if (!this.instance) this.instance = new Game();
@@ -59,13 +68,19 @@ export class Game {
 	public isActive(): Boolean {
 		return this.gameActive;
 	}
+	public hasStarted(): Boolean {
+		return this.gameStarted;
+	}
+	public setStarted(): void {
+		this.gameStarted = true;
+	}
 	public isPlayersTurn(): Boolean {
 		return this.playersTurn;
 	}
 	public loadMap(): void {
 		this.field = this.builder!.getPresetMap(this.currentMap!, this.assets!);
 		this.setPlayer();
-		//TODO: Rules
+		initStartRules();
 	}
 	public setMap(
 		name: string,
@@ -85,7 +100,7 @@ export class Game {
 		this.player = player;
 
 		this.setPlayerPos(player.getPos());
-		//TODO: Rules
+		initStartRules();
 	}
 	public performAction(action: ACTION): void {
 		switch (action) {
@@ -129,14 +144,14 @@ export class Game {
 			case ACTION.END:
 				this.endGame();
 				break;
-			// case ACTION.QSAVE:
-			// 	msg("Quick saving...");
-			// 	saveManager.save("_qsave", currentMap);
-			// 	break;
-			// case ACTION.QLOAD:
-			// 	msg("Quick loading...");
-			// 	saveManager.load("_qsave");
-			// 	break;
+			case ACTION.QSAVE:
+				this.msg('Quick saving...');
+				this.saveManager!.save(0);
+				break;
+			case ACTION.QLOAD:
+				this.msg('Quick loading...');
+				this.saveManager!.load(0);
+				break;
 			default:
 				break;
 		}
@@ -145,10 +160,14 @@ export class Game {
 		if (this.gameActive) return;
 		else this.gameActive = true;
 
+		// Open Menu
+		this.menu = new Menu();
+
 		this.controller = new Controller();
 		this.drawer = new Drawer();
 		this.saveManager = new SaveManager();
 		this.builder = new FieldBuilder();
+		this.saveManager = new SaveManager();
 
 		// Resize canvas when window resizes
 		this.drawer.addResizeListener();
@@ -157,6 +176,7 @@ export class Game {
 		this.assets = new AssetStorage();
 		this.assets.readTilesheets();
 		this.assets.readEnemies();
+		this.assets.readNPCs();
 		this.assets.readItems();
 
 		// Init Player
@@ -167,31 +187,32 @@ export class Game {
 		this.currentMap = 'map1';
 		this.loadMap();
 
-		//TODO: check save
-
 		// Life Cycle
 		let prevTimestamp = 0;
 		let elapsed: number;
+		console.log(this.getEntities());
 		const step = (timestamp: number) => {
-			// if(!this.isActive()) ...
-			if (!this.playersTurn) {
-				this.processEntities();
-			} else if (this.controller!.hasAction()) {
-				this.performAction(this.controller!.getAction()!);
-				this.controller?.clearActions();
-			}
+			if (!this.menu!.opened()) {
+				// if(!this.isActive()) ...
+				if (!this.playersTurn) {
+					this.processEntities();
+				} else if (this.controller!.hasAction()) {
+					this.performAction(this.controller!.getAction()!);
+					this.controller?.clearActions();
+				}
 
-			elapsed = timestamp - prevTimestamp;
-			if (elapsed >= 1000) {
-				this.drawer?.toggleAnimFrame();
-				prevTimestamp = timestamp;
-			}
+				elapsed = timestamp - prevTimestamp;
+				if (elapsed >= 1000) {
+					this.drawer?.toggleAnimFrame();
+					prevTimestamp = timestamp;
+				}
 
-			// Draw
-			this.drawer!.clear();
-			this.drawer!.drawField(this.field!);
-			this.drawer!.drawInfo();
-			this.drawer!.drawLog();
+				// Draw
+				this.drawer!.clear();
+				this.drawer!.drawField(this.field!);
+				this.drawer!.drawInfo();
+				this.drawer!.drawLog();
+			}
 			window.requestAnimationFrame(step);
 		};
 		window.requestAnimationFrame(step);
@@ -272,7 +293,32 @@ export class Game {
 		return this.events;
 	}
 
+	// Rules
+	public addRule(rule: GameRule, start = true): void {
+		if (start) this.startRules.push(rule);
+		else this.finishRules.push(rule);
+	}
+	public getRules(start = true): GameRule[] {
+		return start ? this.startRules : this.finishRules;
+	}
+	public clearRules(start = true): void {
+		if (start) this.startRules.length = 0;
+		else this.finishRules.length = 0;
+	}
+
 	// Misc
+	public getMenu(): Menu {
+		return this.menu!;
+	}
+	public getSaveManager(): SaveManager {
+		return this.saveManager!;
+	}
+	public getCurrentMap(): string {
+		return this.currentMap!;
+	}
+	public msg(str: string): void {
+		console.log(str);
+	}
 	public changeScale(delta: number): void {
 		this.drawer?.changeScale(this.drawer.getScale() + delta);
 	}
