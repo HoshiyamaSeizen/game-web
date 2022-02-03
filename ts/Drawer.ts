@@ -6,7 +6,7 @@ import { Position } from './Positioning';
 import { Entity } from './Objects/Entity';
 import { finishRulesToString } from './Rules/RuleChecker';
 
-const spriteSize = 16;
+const spriteSize = 32;
 
 export class Drawer {
 	private animState = {
@@ -14,7 +14,7 @@ export class Drawer {
 		playerResting: false,
 		playerDropping: false,
 		playerDrinking: false,
-		scale: 3,
+		scale: 2,
 	};
 	private canvas: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D;
