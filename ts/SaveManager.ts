@@ -6,6 +6,7 @@ import { Position } from './Positioning';
 import { Game } from './Game';
 import { Condition } from './Rules/GameRule';
 import { Item, Spell, Weapon, Armor, Potion } from './Objects/Item';
+import { NPC } from './Objects/NPC';
 
 export class SaveManager {
 	public save(saveIndex: number): Boolean {
@@ -57,7 +58,7 @@ export class SaveManager {
 					name: e.getName(),
 					x: pos.x,
 					y: pos.y,
-					hp: e.getHP(),
+					hp: e instanceof NPC ? e.getPhraseIndex() : e.getHP(),
 				});
 			});
 			save.entityCount = count;
@@ -101,13 +102,17 @@ export class SaveManager {
 			game.msg(`Game saved`);
 			return true;
 		} catch (e) {
+			let message: string;
+			if (e instanceof Error) message = e.message;
+			else message = String(e);
+			Game.getInstance().msg(message);
 			return false;
 		}
 	}
 	public load(saveIndex: number): Boolean {
 		try {
 			let saveJSON = localStorage.getItem(`save ${saveIndex}`);
-			if (saveJSON === null) throw new Error('Save not found');
+			if (saveJSON === null) throw new Error('Error: Save not found');
 
 			let save: saveStructure = JSON.parse(saveJSON);
 
@@ -123,9 +128,14 @@ export class SaveManager {
 
 			let pos: Position;
 			save.entities.forEach((e) => {
-				if (!storage.checkEnemy(e.name)) throw new Error(`Entity ${e.name} not found`);
-				let entity = storage.getEnemies().get(e.name)!.clone();
-				entity.changeStat(Condition.HP, e.hp);
+				let entity: Entity;
+				if (storage.checkEnemy(e.name)) {
+					entity = storage.getEnemies().get(e.name)!.clone();
+					entity.changeStat(Condition.HP, e.hp);
+				} else if (storage.checkNPC(e.name)) {
+					entity = storage.getNPCs().get(e.name)!.clone();
+					(<NPC>entity).setPhraseIndex(e.hp);
+				} else throw new Error(`Entity ${e.name} not found`);
 
 				pos = new Position(e.x, e.y);
 				if (!builder.canEntityBeSet(pos)) throw new Error('Error while placing an entity');
@@ -135,7 +145,7 @@ export class SaveManager {
 			});
 
 			save.items.forEach((i) => {
-				if (!storage.checkItem(i.name)) throw new Error(`Itme ${i.name} not found`);
+				if (!storage.checkItem(i.name)) throw new Error(`Error: Itme ${i.name} not found`);
 				let item = storage.getItems().get(i.name)!.clone();
 				item.changeStat(Condition.DUR, i.dur);
 
@@ -159,7 +169,8 @@ export class SaveManager {
 
 			let item = save.player.weapon;
 			if (item.name != 'None') {
-				if (!storage.checkItem(item.name)) throw new Error(`Itme ${item.name} not found`);
+				if (!storage.checkItem(item.name))
+					throw new Error(`Error: Item ${item.name} not found`);
 				let weapon = <Weapon>storage.getItems().get(item.name)!.clone();
 				weapon.changeStat(Condition.DUR, item.dur);
 				player.setWeapon(weapon);
@@ -167,7 +178,8 @@ export class SaveManager {
 
 			item = save.player.weapon;
 			if (item.name != 'None') {
-				if (!storage.checkItem(item.name)) throw new Error(`Itme ${item.name} not found`);
+				if (!storage.checkItem(item.name))
+					throw new Error(`Error: Itme ${item.name} not found`);
 				let spell = <Spell>storage.getItems().get(item.name)!.clone();
 				spell.changeStat(Condition.DUR, item.dur);
 				player.setSpell(spell);
@@ -175,7 +187,8 @@ export class SaveManager {
 
 			item = save.player.armor;
 			if (item.name != 'None') {
-				if (!storage.checkItem(item.name)) throw new Error(`Itme ${item.name} not found`);
+				if (!storage.checkItem(item.name))
+					throw new Error(`Error: Itme ${item.name} not found`);
 				let armor = <Armor>storage.getItems().get(item.name)!.clone();
 				armor.changeStat(Condition.DUR, item.dur);
 				player.setArmor(armor);
@@ -183,7 +196,8 @@ export class SaveManager {
 
 			item = save.player.potion;
 			if (item.name != 'None') {
-				if (!storage.checkItem(item.name)) throw new Error(`Itme ${item.name} not found`);
+				if (!storage.checkItem(item.name))
+					throw new Error(`Error: Itme ${item.name} not found`);
 				let potion = <Potion>storage.getItems().get(item.name)!.clone();
 				potion.changeStat(Condition.DUR, item.dur);
 				player.setPotion(potion);
@@ -193,6 +207,10 @@ export class SaveManager {
 			game.msg(`Save ${saveIndex} loaded`);
 			return true;
 		} catch (e) {
+			let message: string;
+			if (e instanceof Error) message = e.message;
+			else message = String(e);
+			Game.getInstance().msg(message);
 			return false;
 		}
 	}
@@ -217,8 +235,3 @@ type saveStructure = {
 		potion: { name: string; dur: number };
 	};
 };
-
-function SaveException(message: string) {
-	return new Error(message);
-}
-SaveException.prototype = Object.create(Error.prototype);
