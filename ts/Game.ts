@@ -85,6 +85,7 @@ export class Game {
 		this.clearItems();
 		this.clearRules();
 
+		this.currentMap = currentMap;
 		this.field = this.builder!.getPresetMap(currentMap!, this.assets!);
 		this.setPlayer(playerPos);
 		initStartRules();

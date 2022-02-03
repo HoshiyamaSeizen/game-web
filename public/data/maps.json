@@ -80,8 +80,8 @@
 			"Healing_Potion"
 		],
 		"transitions": [
-			{ "name": "map1", "x": 6, "y": 3, "followRules": false },
-			{ "name": "map1", "x": 6, "y": 7, "followRules": false }
+			{ "map": "map1", "x": 6, "y": 3, "followRules": false },
+			{ "map": "map1", "x": 6, "y": 7, "followRules": false }
 		],
 		"layout": [
 			"x x x x x x x x x x x x x x",
