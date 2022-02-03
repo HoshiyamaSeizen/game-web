@@ -6,6 +6,7 @@ import { GameObject } from './Object';
 import { Direction, Position } from '../Positioning';
 import { Entity } from './Entity';
 import { GameEvent } from '../Event';
+import { Condition } from '../Rules/GameRule';
 
 export class Enemy extends GameObject implements Entity {
 	private name: string;
@@ -29,7 +30,28 @@ export class Enemy extends GameObject implements Entity {
 		this.strategy?.execute();
 	}
 
-	// void changeStat(Condition stat, size_t value);
+	public changeStat(stat: Condition, value: number): void {
+		switch (stat) {
+			case Condition.HP:
+				this.health = value;
+				if (this.health > this.maxHealth) this.health = this.maxHealth;
+				break;
+			case Condition.MHP:
+				this.maxHealth = value;
+				break;
+			case Condition.DEF:
+				this.armor = value;
+				break;
+			case Condition.DAM:
+				this.damage = value;
+				break;
+			case Condition.MONEY:
+				this.reward = value;
+				break;
+			default:
+				break;
+		}
+	}
 
 	public move(dir: Direction): void {
 		let newPos = changePos(this.pos, dir);

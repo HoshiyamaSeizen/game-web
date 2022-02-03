@@ -1,11 +1,11 @@
+import { Condition } from './../Rules/GameRule';
 import { eType, sourceType, GameEvent } from './../Event';
 import { Game } from './../Game';
 import { GameObject } from './Object';
 
 export interface Item extends GameObject {
 	changeName(name: string): void;
-	// changeStat()
-
+	changeStat(stat: Condition, value: number): void;
 	getName(): string;
 	getDur(): number;
 	setDur(num: number): void;
@@ -38,7 +38,23 @@ export class Weapon extends GameObject implements Item {
 	public getCost(): number {
 		return this.cost;
 	}
-	//void changeStat(Condition stat, size_t value);
+	public changeStat(stat: Condition, value: number): void {
+		switch (stat) {
+			case Condition.DAM:
+				this.damage = value;
+				break;
+			case Condition.COST:
+				this.cost = value;
+				break;
+			case Condition.DUR:
+				this.durability = value;
+				break;
+			case Condition.PRICE:
+				this.moneyCost = value;
+			default:
+				break;
+		}
+	}
 	public getDur(): number {
 		return this.durability;
 	}
@@ -95,7 +111,23 @@ export class Spell extends GameObject implements Item {
 	public getCost(): number {
 		return this.cost;
 	}
-	//void changeStat(Condition stat, size_t value);
+	public changeStat(stat: Condition, value: number): void {
+		switch (stat) {
+			case Condition.DAM:
+				this.damage = value;
+				break;
+			case Condition.COST:
+				this.cost = value;
+				break;
+			case Condition.DUR:
+				this.charges = value;
+				break;
+			case Condition.PRICE:
+				this.moneyCost = value;
+			default:
+				break;
+		}
+	}
 	public getDur(): number {
 		return this.charges;
 	}
@@ -149,7 +181,20 @@ export class Armor extends GameObject implements Item {
 	public getArmor(): number {
 		return this.armor;
 	}
-	//void changeStat(Condition stat, size_t value);
+	public changeStat(stat: Condition, value: number): void {
+		switch (stat) {
+			case Condition.DEF:
+				this.armor = value;
+				break;
+			case Condition.DUR:
+				this.durability = value;
+				break;
+			case Condition.PRICE:
+				this.moneyCost = value;
+			default:
+				break;
+		}
+	}
 	public getDur(): number {
 		return this.durability;
 	}
@@ -209,7 +254,26 @@ export class Potion extends GameObject implements Item {
 	public getAmount(): number {
 		return this.amount;
 	}
-	//void changeStat(Condition stat, size_t value);
+	public changeStat(stat: Condition, value: number): void {
+		switch (stat) {
+			case Condition.HP:
+				this.type = pType.HP;
+				this.amount = value;
+				break;
+			case Condition.MP:
+				this.type = pType.MP;
+				this.amount = value;
+				break;
+			case Condition.SP:
+				this.type = pType.SP;
+				this.amount = value;
+				break;
+			case Condition.PRICE:
+				this.moneyCost = value;
+			default:
+				break;
+		}
+	}
 	public getDur(): number {
 		return 1;
 	}
