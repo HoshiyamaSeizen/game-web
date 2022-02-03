@@ -84,6 +84,7 @@ export class Weapon extends GameObject implements Item {
 		item.name = this.name;
 		item.sprite = this.sprite;
 		item.spriteWhenUsed = this.spriteWhenUsed;
+		item.moneyCost = this.moneyCost;
 		return item;
 	}
 }
@@ -159,6 +160,7 @@ export class Spell extends GameObject implements Item {
 		item.name = this.name;
 		item.sprite = this.sprite;
 		item.spriteWhenUsed = this.spriteWhenUsed;
+		item.moneyCost = this.moneyCost;
 		return item;
 	}
 }
@@ -224,6 +226,7 @@ export class Armor extends GameObject implements Item {
 		item.name = this.name;
 		item.sprite = this.sprite;
 		item.spriteWhenUsed = this.spriteWhenUsed;
+		item.moneyCost = this.moneyCost;
 		return item;
 	}
 }
@@ -299,6 +302,7 @@ export class Potion extends GameObject implements Item {
 		item.name = this.name;
 		item.sprite = this.sprite;
 		item.spriteWhenUsed = this.spriteWhenUsed;
+		item.moneyCost = this.moneyCost;
 		return item;
 	}
 }

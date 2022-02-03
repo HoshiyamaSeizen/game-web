@@ -1,3 +1,4 @@
+import { Enemy } from './Objects/Enemy';
 import { Game } from './Game';
 import { Field } from './Map/Field';
 import { Sprite } from './Storage';
@@ -18,14 +19,51 @@ export class Drawer {
 	};
 	private canvas: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D;
+	private scaledSpriteSize: number;
 
 	private drawItem(item: Item, xAbs: number, yAbs: number): void {
 		this.drawSprite(item.getSprite(), xAbs, yAbs);
+
+		// Price
+		if (item.getMoneyCost()) {
+			let text = `${item.getMoneyCost()}$`;
+			let offset = 2;
+			this.ctx.font = `${Math.floor(this.scaledSpriteSize / 4)}px PixeloidSans`;
+			this.ctx.fillStyle = 'white';
+			this.ctx.fillText(
+				text,
+				xAbs + offset,
+				yAbs + this.scaledSpriteSize - offset,
+				this.scaledSpriteSize - 2 * offset
+			);
+		}
 	}
 	private drawEntity(entity: Entity, xAbs: number, yAbs: number): void {
 		let sprite = entity.getSprite();
 		sprite.pos = new Position(+entity.getDir() % 4, +this.animState.secondAnimFrame);
 		this.drawSprite(sprite, xAbs, yAbs);
+
+		if (entity instanceof Enemy && entity.getHP() < entity.getmaxHP()) {
+			let offsetX = 2 * this.animState.scale;
+			let offsetY = 3 * this.animState.scale;
+			let barHeight = Math.ceil(this.scaledSpriteSize / 16);
+			let barWidth = this.scaledSpriteSize - 2 * offsetX;
+			let green = (barWidth * entity.getHP()) / entity.getmaxHP();
+			this.ctx.fillStyle = 'green';
+			this.ctx.fillRect(
+				xAbs + offsetX,
+				yAbs + this.scaledSpriteSize - barHeight - offsetY,
+				green,
+				barHeight
+			);
+			this.ctx.fillStyle = 'red';
+			this.ctx.fillRect(
+				xAbs + offsetX + green,
+				yAbs + this.scaledSpriteSize - barHeight - offsetY,
+				barWidth - green,
+				barHeight
+			);
+		}
 	}
 	private drawPlayer(xAbs: number, yAbs: number): void {
 		let p = Game.getInstance().getPlayer();
@@ -73,6 +111,7 @@ export class Drawer {
 	constructor() {
 		this.canvas = <HTMLCanvasElement>document.getElementById('canvas')!;
 		this.ctx = this.canvas.getContext('2d')!;
+		this.scaledSpriteSize = this.animState.scale * spriteSize;
 	}
 
 	private noSmoothing(): void {
@@ -86,16 +125,15 @@ export class Drawer {
 	public drawField(f: Field): void {
 		this.noSmoothing();
 		let x, y: number;
-		let scaledSpriteSize = spriteSize * this.animState.scale;
 
 		let pos = Game.getInstance().getPlayer().getPos();
-		let offsetX = Math.round(this.canvas.width / 2 - scaledSpriteSize * (0.5 + pos.x));
-		let offsetY = Math.round(this.canvas.height / 2 - scaledSpriteSize * (0.5 + pos.y));
+		let offsetX = Math.round(this.canvas.width / 2 - this.scaledSpriteSize * (0.5 + pos.x));
+		let offsetY = Math.round(this.canvas.height / 2 - this.scaledSpriteSize * (0.5 + pos.y));
 
 		for (let i = 0; i < f.getWidth(); i++) {
 			for (let j = 0; j < f.getHeigth(); j++) {
-				x = i * scaledSpriteSize + offsetX;
-				y = j * scaledSpriteSize + offsetY;
+				x = i * this.scaledSpriteSize + offsetX;
+				y = j * this.scaledSpriteSize + offsetY;
 				let pos = new Position(i, j);
 				this.drawSprite(f.cellAt(pos).getSprite(), x, y);
 				if (f.cellAt(pos).hasItem()) this.drawItem(f.cellAt(pos).getItem()!, x, y);
@@ -231,6 +269,7 @@ export class Drawer {
 		if (newScale < 1) this.animState.scale = 1;
 		else if (newScale > 5) this.animState.scale = 5;
 		else this.animState.scale = newScale;
+		this.scaledSpriteSize = this.animState.scale * spriteSize;
 	}
 	public setPlayerSprite(): void {
 		let image = new Image();

@@ -5,7 +5,7 @@
 		"dam": 10,
 		"cost": 3,
 		"dur": 2,
-		"money": 0
+		"money": 20
 	},
 	{
 		"name": "Fire_Spell",
@@ -13,7 +13,7 @@
 		"dam": 50,
 		"cost": 10,
 		"charges": 1,
-		"money": 0
+		"money": 1
 	},
 	{
 		"name": "Water_Spell",
@@ -21,7 +21,7 @@
 		"dam": 10,
 		"cost": 5,
 		"charges": 1,
-		"money": 0
+		"money": 88000
 	},
 	{
 		"name": "Leather_Armor",

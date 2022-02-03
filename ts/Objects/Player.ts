@@ -234,6 +234,14 @@ export class Player extends GameObject implements Entity {
 		let f = Game.getInstance().getField()!;
 		if (f.cellAt(this.pos).hasItem()) {
 			let item = f.cellAt(this.pos).getItem()!;
+			if (item.getMoneyCost() > this.money) {
+				Game.getInstance().playerActed();
+				Game.getInstance().pushEvent(
+					new GameEvent(sourceType.PLAYER, eType.notEnoughMoney, '', '', item.getMoneyCost())
+				);
+				return;
+			}
+			this.money -= item.getMoneyCost();
 			f.cellAt(this.pos).setItem(null);
 			Game.getInstance().removeItem(item);
 			if (item instanceof Weapon) {

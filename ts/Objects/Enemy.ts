@@ -107,6 +107,9 @@ export class Enemy extends GameObject implements Entity {
 	public getHP(): number {
 		return this.health;
 	}
+	public getmaxHP(): number {
+		return this.maxHealth;
+	}
 	public getReward(): number {
 		return this.reward;
 	}
