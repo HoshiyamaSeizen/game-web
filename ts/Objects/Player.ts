@@ -1,3 +1,5 @@
+import { NPC } from './NPC';
+import { checkFinishRules } from './../Rules/RuleChecker';
 import { eType, sourceType } from './../Event';
 import { changePos, Position, findDir } from './../Positioning';
 import { Game } from './../Game';
@@ -6,6 +8,7 @@ import { Direction } from '../Positioning';
 import { Entity } from './Entity';
 import { GameObject } from './Object';
 import { GameEvent } from '../Event';
+import { Condition } from '../Rules/GameRule';
 
 const MAX_HP_DEFAULT = 1000;
 const MAX_MP_DEFAULT = 100;
@@ -45,7 +48,36 @@ export class Player extends GameObject implements Entity {
 		this.name = 'you';
 	}
 
-	// void changeStat(Condition stat, size_t value);
+	public changeStat(stat: Condition, value: number): void {
+		switch (stat) {
+			case Condition.HP:
+				this.health = value;
+				break;
+			case Condition.MHP:
+				this.maxHealth = value;
+				break;
+			case Condition.MP:
+				this.mana = value;
+				break;
+			case Condition.MMP:
+				this.maxMana = value;
+				break;
+			case Condition.SP:
+				this.stamina = value;
+				break;
+			case Condition.MSP:
+				this.maxStamina = value;
+				break;
+			case Condition.DAM:
+				this.damage = value;
+				break;
+			case Condition.MONEY:
+				this.money = value;
+				break;
+			default:
+				break;
+		}
+	}
 
 	public move(dir: Direction): void {
 		let newPos = changePos(this.pos, dir);
@@ -54,14 +86,21 @@ export class Player extends GameObject implements Entity {
 	public movePos(pos: Position): void {
 		let f = Game.getInstance().getField();
 
-		if (f.isInField(pos) && f.cellAt(pos).isFree()) {
-			f.cellAt(this.pos).setEntity(null);
-			f.cellAt(pos).setEntity(this);
+		if (f.isInField(pos)) {
+			if (f.cellAt(pos).isFree()) {
+				f.cellAt(this.pos).setEntity(null);
+				f.cellAt(pos).setEntity(this);
+			} else if (f.cellAt(pos).getEntity() instanceof NPC) {
+				let npc = f.cellAt(pos).getEntity()!;
+				npc.setPos(this.pos);
+				f.cellAt(this.pos).setEntity(npc);
+				f.cellAt(pos).setEntity(this);
+			} else return;
 			this.prevDir = findDir(this.pos, pos);
 			this.pos = pos;
 			Game.getInstance().playerActed();
 			if (f.cellAt(this.pos).isFinish()) {
-				if (true) {
+				if (checkFinishRules()) {
 					Game.getInstance().pushEvent(new GameEvent(sourceType.PLAYER, eType.finishEvent));
 					Game.getInstance().endGame();
 				} else
@@ -76,17 +115,16 @@ export class Player extends GameObject implements Entity {
 	public hit(dir: Direction): void {
 		let f = Game.getInstance().getField();
 		let hitPos = changePos(this.pos, dir);
-		if (
-			f.isInField(hitPos) &&
-			!f.cellAt(hitPos).isFree() &&
-			f.cellAt(hitPos).isAccessible() &&
-			f.cellAt(hitPos).isEntityEnemy()
-		) {
+		if (f.isInField(hitPos) && !f.cellAt(hitPos).isFree() && f.cellAt(hitPos).isAccessible()) {
 			let ent = f.cellAt(hitPos).getEntity()!;
 			this.hitEntity(ent);
 		}
 	}
 	public hitEntity(e: Entity): void {
+		if (e instanceof NPC) {
+			this.talk(e);
+			return;
+		}
 		let dealedDamage = this.damage + (this.weapon ? this.weapon.getDamage() : 0);
 		let requiredSP = 1 + (this.weapon ? this.weapon.getCost() : 0);
 
@@ -107,29 +145,32 @@ export class Player extends GameObject implements Entity {
 		let requiredMP = this.spell ? this.spell.getCost() : 0;
 
 		let hitPos = changePos(this.pos, dir);
-		if (
-			f.isInField(hitPos) &&
-			!f.cellAt(hitPos).isFree() &&
-			f.cellAt(hitPos).isEntityEnemy() &&
-			this.mana >= requiredMP &&
-			this.spell
-		) {
+		if (f.isInField(hitPos) && !f.cellAt(hitPos).isFree()) {
 			let ent = f.cellAt(hitPos).getEntity()!;
-			this.mana -= requiredMP;
-			this.prevDir = dir;
-			Game.getInstance().playerActed();
-			Game.getInstance().pushEvent(
-				new GameEvent(
-					sourceType.PLAYER,
-					eType.castEvent,
-					this.name,
-					ent.getName(),
-					dealedDamage
-				)
-			);
-			this.spell.decreaseDur();
-			ent.getHit(dealedDamage);
+			if (ent instanceof NPC) {
+				this.talk(ent);
+				return;
+			}
+			if (this.mana >= requiredMP && this.spell) {
+				this.mana -= requiredMP;
+				this.prevDir = dir;
+				Game.getInstance().playerActed();
+				Game.getInstance().pushEvent(
+					new GameEvent(
+						sourceType.PLAYER,
+						eType.castEvent,
+						this.name,
+						ent.getName(),
+						dealedDamage
+					)
+				);
+				this.spell.decreaseDur();
+				ent.getHit(dealedDamage);
+			}
 		}
+	}
+	public talk(npc: NPC): void {
+		Game.getInstance().getDialogue().setTarget(npc);
 	}
 	public drinkPotion(): void {
 		if (this.hasPotion()) {

@@ -5,6 +5,8 @@
 		"height": 9,
 		"enemiesCount": 5,
 		"enemies": ["Zombie", "Hell-Hound", "Ghost", "Zombie", "Knight"],
+		"npcCount": 2,
+		"npcs": ["Townsman", "Quester"],
 		"itemsCount": 6,
 		"items": [
 			"Iron_Sword",
@@ -20,8 +22,8 @@
 			"x o e o o o o o o e o o x x",
 			"x e o o o x o o o x x o x x",
 			"x x x o x x x x x x x e x x",
-			"x i o o x o o o o o o o x x",
-			"x i o o x o o o e o o o x x",
+			"x i n o x o o o o o o o x x",
+			"x i o n x o o o e o o o x x",
 			"x s i i x o f i i o o o x x",
 			"x x x x x x x x x x x x x x"
 		],

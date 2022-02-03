@@ -1,3 +1,4 @@
+import { NPC } from './NPC';
 import { Game } from './../Game';
 import { Position, Direction, changePos, posNear, randDir } from './../Positioning';
 import { Entity } from './Entity';
@@ -21,7 +22,7 @@ export class GuardStrategy implements Strategy {
 		if (this.posFromGuarding == nullPos) this.posFromGuarding = pos;
 
 		let player = Game.getInstance().getPlayer();
-		if (posNear(player.getPos(), pos)) {
+		if (posNear(player.getPos(), pos) && !(this.entity instanceof NPC)) {
 			this.entity.hitEntity(player);
 		} else {
 			let newPos = changePos(pos, randDir());
@@ -39,6 +40,11 @@ export class WanderStrategy implements Strategy {
 		this.entity = e;
 	}
 	public execute(): void {
+		if (this.entity instanceof NPC) {
+			this.entity.move(randDir());
+			return;
+		}
+
 		let pos = this.entity.getPos();
 		let player = Game.getInstance().getPlayer();
 		if (posNear(player.getPos(), pos)) {
@@ -62,7 +68,7 @@ export class HuntStrategy implements Strategy {
 	public execute(): void {
 		let pos = this.entity.getPos();
 		let player = Game.getInstance().getPlayer();
-		if (posNear(player.getPos(), pos)) {
+		if (posNear(player.getPos(), pos) && !(this.entity instanceof NPC)) {
 			this.entity.hitEntity(player);
 			return;
 		}
@@ -85,7 +91,7 @@ export class PatrolStrategy implements Strategy {
 	public execute(): void {
 		let pos = this.entity.getPos();
 		let player = Game.getInstance().getPlayer();
-		if (posNear(player.getPos(), pos)) {
+		if (posNear(player.getPos(), pos) && !(this.entity instanceof NPC)) {
 			this.entity.hitEntity(player);
 			return;
 		} else {

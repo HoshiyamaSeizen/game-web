@@ -1,3 +1,4 @@
+import { Dialogue } from './Dialogue';
 import { initStartRules } from './Rules/RuleChecker';
 import { GameRule } from './Rules/GameRule';
 import { Enemy } from './Objects/Enemy';
@@ -42,6 +43,7 @@ export class Game {
 	private assets: AssetStorage | null = null;
 	private saveManager: SaveManager | null = null;
 	private menu: Menu | null = null;
+	private dialogue: Dialogue | null = null;
 	private controller: Controller | null = null;
 	private drawer: Drawer | null = null;
 	private move: number;
@@ -168,6 +170,7 @@ export class Game {
 		this.saveManager = new SaveManager();
 		this.builder = new FieldBuilder();
 		this.saveManager = new SaveManager();
+		this.dialogue = new Dialogue();
 
 		// Resize canvas when window resizes
 		this.drawer.addResizeListener();
@@ -190,7 +193,6 @@ export class Game {
 		// Life Cycle
 		let prevTimestamp = 0;
 		let elapsed: number;
-		console.log(this.getEntities());
 		const step = (timestamp: number) => {
 			if (!this.menu!.opened()) {
 				// if(!this.isActive()) ...
@@ -212,6 +214,7 @@ export class Game {
 				this.drawer!.drawField(this.field!);
 				this.drawer!.drawInfo();
 				this.drawer!.drawLog();
+				this.drawer!.drawDialogue();
 			}
 			window.requestAnimationFrame(step);
 		};
@@ -309,6 +312,9 @@ export class Game {
 	// Misc
 	public getMenu(): Menu {
 		return this.menu!;
+	}
+	public getDialogue(): Dialogue {
+		return this.dialogue!;
 	}
 	public getSaveManager(): SaveManager {
 		return this.saveManager!;

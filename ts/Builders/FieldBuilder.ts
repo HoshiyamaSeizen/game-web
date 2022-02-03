@@ -1,3 +1,5 @@
+import { NPC } from './../Objects/NPC';
+import { parseRules } from './../Rules/RuleChecker';
 import { Game } from './../Game';
 import { Enemy } from './../Objects/Enemy';
 import { AssetStorage, Sprite } from './../Storage';
@@ -77,9 +79,11 @@ export class FieldBuilder implements Builder {
 		this.setSize(map.width, map.height);
 
 		// Enemies
-		let enemies = [...map.enemies.reverse()];
+		let enemies = map.enemies;
+		// NPCs
+		let npcs = map.npcs;
 		// Items
-		let items = [...map.items.reverse()];
+		let items = map.items;
 
 		// Layout
 		map.layout.forEach((row, j) => {
@@ -100,14 +104,25 @@ export class FieldBuilder implements Builder {
 					case 'e':
 						if (!this.fromSave) {
 							this.setEntity(
-								assets.getEnemies().get(enemies.pop()!)!.clone(),
+								assets.getEnemies().get(enemies.shift()!)!.clone(),
+								new Position(i, j)
+							);
+						}
+						break;
+					case 'n':
+						if (!this.fromSave) {
+							this.setEntity(
+								assets.getNPCs().get(npcs.shift()!)!.clone(),
 								new Position(i, j)
 							);
 						}
 						break;
 					case 'i':
 						if (!this.fromSave) {
-							this.setItem(assets.getItems().get(items.pop()!)!.clone(), new Position(i, j));
+							this.setItem(
+								assets.getItems().get(items.shift()!)!.clone(),
+								new Position(i, j)
+							);
 						}
 						break;
 					default:
@@ -129,6 +144,9 @@ export class FieldBuilder implements Builder {
 		});
 
 		// Rules
+		Game.getInstance().clearRules(true);
+		Game.getInstance().clearRules(false);
+		map.startRules.concat(map.finishRules).forEach((rule) => parseRules(rule.split('.')));
 	}
 
 	public getPresetMap(name: string, assets: AssetStorage): Field {

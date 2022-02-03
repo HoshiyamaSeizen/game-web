@@ -35,7 +35,21 @@ export class Controller {
 	}
 	private processInput(): void {
 		let menu = Game.getInstance().getMenu();
-		if (!menu.opened()) {
+		let dialogue = Game.getInstance().getDialogue();
+
+		if (menu.opened()) {
+			if (this.pressed.has('Escape') && Game.getInstance().hasStarted()) {
+				menu.toggle();
+			}
+			this.clearActions();
+		} else if (dialogue.opened()) {
+			if (this.pressed.has('Escape') || !dialogue.shouldProceed()) {
+				dialogue.close();
+			} else {
+				dialogue.next();
+			}
+			this.clearActions();
+		} else {
 			this.actionGiven = true;
 
 			let Ndir = this.isKeyPressed(ACTION.UP);
@@ -67,10 +81,6 @@ export class Controller {
 					// console
 					this.actionGiven = false;
 				}
-			}
-		} else {
-			if (this.pressed.has('Escape') && Game.getInstance().hasStarted()) {
-				menu.toggle();
 			}
 		}
 	}

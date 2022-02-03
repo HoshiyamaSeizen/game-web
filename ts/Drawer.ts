@@ -4,6 +4,7 @@ import { Sprite } from './Storage';
 import { Item } from './Objects/Item';
 import { Position } from './Positioning';
 import { Entity } from './Objects/Entity';
+import { finishRulesToString } from './Rules/RuleChecker';
 
 const spriteSize = 16;
 
@@ -98,7 +99,8 @@ export class Drawer {
 				let pos = new Position(i, j);
 				this.drawSprite(f.cellAt(pos).getSprite(), x, y);
 				if (f.cellAt(pos).hasItem()) this.drawItem(f.cellAt(pos).getItem()!, x, y);
-				if (f.cellAt(pos).isEntityEnemy()) this.drawEntity(f.cellAt(pos).getEntity()!, x, y);
+				if (f.cellAt(pos).isEntityEnemy() || f.cellAt(pos).isEntityNPC())
+					this.drawEntity(f.cellAt(pos).getEntity()!, x, y);
 				else if (f.cellAt(pos).isEntityPlayer()) this.drawPlayer(x, y);
 			}
 		}
@@ -123,7 +125,15 @@ export class Drawer {
 		text = `Money: ${p.getMoney()}`;
 		this.ctx.fillText(text, 10, 150);
 
-		text = `Goals: ${'None'}`;
+		let k = 195,
+			count = 0;
+		finishRulesToString().forEach((rule) => {
+			this.ctx.fillText(rule, 30, k);
+			k += 20;
+			count++;
+		});
+		text = `Goals: ${count ? '' : 'None'}`;
+		this.ctx.fillText(text, 10, 175);
 	}
 	public drawLog(): void {
 		this.ctx.font = '16px PixeloidSans';
@@ -138,6 +148,58 @@ export class Drawer {
 				this.ctx.fillText(text, this.canvas.width - this.ctx.measureText(text).width - 10, y);
 				y += 20;
 			});
+	}
+	public drawDialogue() {
+		let dialogue = Game.getInstance().getDialogue();
+		if (!dialogue.opened()) return;
+
+		//	header
+		let boxStart = Math.ceil(this.canvas.height - 200);
+		let fontSize = 20;
+		let offset = 10;
+		this.ctx.fillStyle = '#261705';
+		this.ctx.fillRect(0, boxStart, this.canvas.width, fontSize + offset * 2);
+
+		// name
+		let nameBoxOffsetY = 10;
+		let nameBoxOffsetX = 40;
+		let nameOffsetY = offset - nameBoxOffsetY;
+		let nameOffsetX = 8;
+		let text = dialogue.getTarget().getName();
+		boxStart += nameBoxOffsetY;
+		this.ctx.font = `${fontSize}px PixeloidSans`;
+		this.ctx.fillStyle = '#b8a288';
+		this.ctx.fillRect(
+			nameBoxOffsetX,
+			boxStart,
+			this.ctx.measureText(text).width + nameOffsetX * 2,
+			fontSize + nameOffsetY * 2
+		);
+
+		boxStart += nameOffsetY + fontSize - 3;
+		this.ctx.fillStyle = '#140c02';
+		this.ctx.fillText(
+			text,
+			nameBoxOffsetX + nameOffsetX + 2,
+			boxStart,
+			this.canvas.width - (nameBoxOffsetY + nameOffsetX)
+		);
+
+		// text box
+		boxStart += offset + 3;
+		this.ctx.fillStyle = '#b8a288';
+		this.ctx.fillRect(0, boxStart, this.canvas.width, this.canvas.height - boxStart);
+
+		// text
+		offset = nameBoxOffsetX + nameOffsetX + 2;
+		boxStart += 30;
+		fontSize = 20;
+		this.ctx.font = `${fontSize}px PixeloidSans`;
+		this.ctx.fillStyle = '#140c02';
+		this.getLines(dialogue.getText(), this.canvas.width - offset * 2).forEach((line) => {
+			this.ctx.fillText(line, offset, boxStart, this.canvas.width - offset * 2);
+			boxStart += fontSize + 4;
+		});
 	}
 	public clear(): void {
 		this.ctx.fillStyle = 'black';
@@ -184,5 +246,24 @@ export class Drawer {
 		};
 		resize();
 		window.addEventListener('resize', resize, false);
+	}
+
+	private getLines(text: string, maxWidth: number): string[] {
+		let words = text.split(' ');
+		let lines: string[] = [];
+		let currentLine: string = words[0];
+
+		for (let i = 1; i < words.length; i++) {
+			let word = words[i];
+			let width = this.ctx.measureText(currentLine + ' ' + word).width;
+			if (width < maxWidth) {
+				currentLine += ' ' + word;
+			} else {
+				lines.push(currentLine);
+				currentLine = word;
+			}
+		}
+		lines.push(currentLine);
+		return lines;
 	}
 }

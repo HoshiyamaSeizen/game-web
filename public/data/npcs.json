@@ -1,0 +1,18 @@
+[
+	{
+		"name": "Townsman",
+		"strategy": "wander",
+		"talkType": "random",
+		"phrases": [
+			"Ad commodo nostrud tempor et. Est laboris ut ea fugiat aliquip in labore id qui occaecat eiusmod nisi esse. Dolor magna cupidatat ut aliqua excepteur culpa dolor. Quis magna Lorem nostrud velit mollit sint occaecat exercitation id sunt anim consequat.",
+			"Amogus",
+			"Zamn"
+		]
+	},
+	{
+		"name": "Quester",
+		"strategy": "guard",
+		"talkType": "order",
+		"phrases": ["Hello", "Hello1", "Hello2"]
+	}
+]
