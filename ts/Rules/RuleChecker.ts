@@ -1,3 +1,4 @@
+import { Enemy } from '../Objects/Enemy';
 import { Game } from './../Game';
 import { RuleType, GameRule, TargetType, Condition } from './GameRule';
 
@@ -50,7 +51,7 @@ export const checkFinishRules = (): Boolean => {
 				Game.getInstance()
 					.getEntities()
 					.forEach((e) => {
-						if (rule.name() == e.getName() || rule.name() == 'all') {
+						if (e instanceof Enemy && (rule.name() == e.getName() || rule.name() == 'all')) {
 							if (rule.condition() == Condition.COUNT) count++;
 							else if (rule.condition() == Condition.KILL) res = false;
 						}
