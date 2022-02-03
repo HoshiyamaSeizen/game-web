@@ -1,3 +1,4 @@
+import { Transition } from './../Map/Cell';
 import { NPC } from './../Objects/NPC';
 import { parseRules } from './../Rules/RuleChecker';
 import { Game } from './../Game';
@@ -45,13 +46,9 @@ export class FieldBuilder implements Builder {
 		}
 		this.field.cellAt(pos).setState(State.start);
 	}
-	public setFinish(pos: Position): void {
-		for (let i = 0; i < this.field.getWidth(); i++) {
-			for (let j = 0; j < this.field.getHeigth(); j++) {
-				if (this.field.cellAt(pos).isFinish()) this.field.cellAt(pos).setState(State.normal);
-			}
-		}
+	public setFinish(pos: Position, transition: Transition | null = null): void {
 		this.field.cellAt(pos).setState(State.finish);
+		if (transition) this.field.cellAt(pos).setTransition(transition);
 	}
 	public setEntity(ent: Entity, pos: Position): void {
 		this.field.cellAt(pos).setEntity(ent);
@@ -79,11 +76,13 @@ export class FieldBuilder implements Builder {
 		this.setSize(map.width, map.height);
 
 		// Enemies
-		let enemies = map.enemies;
+		let enemies = [...map.enemies];
 		// NPCs
-		let npcs = map.npcs;
+		let npcs = [...map.npcs];
 		// Items
-		let items = map.items;
+		let items = [...map.items];
+		// Transitions
+		let transitions = [...map.transitions];
 
 		// Layout
 		map.layout.forEach((row, j) => {
@@ -93,7 +92,10 @@ export class FieldBuilder implements Builder {
 						this.setStart(new Position(i, j));
 						break;
 					case 'f':
-						this.setFinish(new Position(i, j));
+						this.setFinish(
+							new Position(i, j),
+							transitions.length ? <Transition>transitions.shift() : null
+						);
 						break;
 					case 'b':
 						this.toggleCellAccessibility(new Position(i, j));

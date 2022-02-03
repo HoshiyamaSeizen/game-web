@@ -16,11 +16,15 @@
 			"Healing_Potion",
 			"Healing_Potion"
 		],
+		"transitions": [
+			{ "map": "map2", "x": 1, "y": 3, "followRules": false },
+			{ "map": "map2", "x": 1, "y": 7, "followRules": false }
+		],
 		"layout": [
 			"x x x x x x x x x x x x x x",
 			"x o o o o x o o o x x x x x",
 			"x o e o o o o o o e o o x x",
-			"x e o o o x o o o x x o x x",
+			"x e o o o x f o o x x o x x",
 			"x x x o x x x x x x x e x x",
 			"x i n o x o o o o o o o x x",
 			"x i o n x o o o e o o o x x",
@@ -41,6 +45,69 @@
 			"0 1 2 2 2 2 2 2 1 1 1 1 0 0",
 			"0 1 2 2 1 0 2 2 2 0 0 1 0 0",
 			"0 0 0 1 0 0 0 0 0 0 0 1 0 0",
+			"0 1 1 1 0 2 2 2 2 2 2 2 0 0",
+			"0 1 1 1 0 2 2 2 2 2 2 2 0 0",
+			"0 1 1 1 0 2 3 2 2 2 2 2 0 0",
+			"0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+		],
+		"startRulesCount": 6,
+		"finishRulesCount": 0,
+		"startRules": [
+			"start.entity.player.mhp.500.",
+			"start.entity.player.hp.500.",
+			"start.entity.player.mmp.200.",
+			"start.entity.player.mp.200.",
+			"start.entity.Zombie.dam.1.",
+			"start.item.Iron_Sword.dam.500."
+		],
+		"finishRules": []
+	},
+	{
+		"name": "map2",
+		"width": 14,
+		"height": 9,
+		"enemiesCount": 5,
+		"enemies": ["Zombie", "Hell-Hound", "Ghost", "Zombie", "Knight"],
+		"npcCount": 2,
+		"npcs": ["Townsman", "Quester"],
+		"itemsCount": 6,
+		"items": [
+			"Iron_Sword",
+			"Leather_Armor",
+			"Fire_Spell",
+			"Water_Spell",
+			"Healing_Potion",
+			"Healing_Potion"
+		],
+		"transitions": [
+			{ "name": "map1", "x": 6, "y": 3, "followRules": false },
+			{ "name": "map1", "x": 6, "y": 7, "followRules": false }
+		],
+		"layout": [
+			"x x x x x x x x x x x x x x",
+			"x o o o o x o o o x x x x x",
+			"x e e o o o o o o e o o x x",
+			"x f o o o x o o o x x o x x",
+			"x x x x x x x x x x x e x x",
+			"x i n o x o o o o o o o x x",
+			"x i o n x o o o e o o o x x",
+			"x f i i x o f i i o o o x x",
+			"x x x x x x x x x x x x x x"
+		],
+		"tilesheet": "dungeon1",
+		"spritesCount": 4,
+		"sprites": [
+			{ "x": 0, "y": 0 },
+			{ "x": 1, "y": 0 },
+			{ "x": 2, "y": 0 },
+			{ "x": 3, "y": 0 }
+		],
+		"spritesLayout": [
+			"0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+			"0 1 1 1 1 0 1 1 1 0 0 0 0 0",
+			"0 1 2 2 2 2 2 2 1 1 1 1 0 0",
+			"0 1 2 2 1 0 2 2 2 0 0 1 0 0",
+			"0 0 0 0 0 0 0 0 0 0 0 1 0 0",
 			"0 1 1 1 0 2 2 2 2 2 2 2 0 0",
 			"0 1 1 1 0 2 2 2 2 2 2 2 0 0",
 			"0 1 1 1 0 2 3 2 2 2 2 2 0 0",

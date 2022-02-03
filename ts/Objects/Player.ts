@@ -100,7 +100,10 @@ export class Player extends GameObject implements Entity {
 			this.pos = pos;
 			Game.getInstance().playerActed();
 			if (f.cellAt(this.pos).isFinish()) {
-				if (checkFinishRules()) {
+				let transition = f.cellAt(this.pos).getTransition();
+				if (transition && (!transition.followRules || checkFinishRules())) {
+					Game.getInstance().loadMap(transition.map, new Position(transition.x, transition.y));
+				} else if (checkFinishRules()) {
 					Game.getInstance().pushEvent(new GameEvent(sourceType.PLAYER, eType.finishEvent));
 					Game.getInstance().endGame();
 				} else

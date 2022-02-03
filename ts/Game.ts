@@ -79,9 +79,14 @@ export class Game {
 	public isPlayersTurn(): Boolean {
 		return this.playersTurn;
 	}
-	public loadMap(): void {
-		this.field = this.builder!.getPresetMap(this.currentMap!, this.assets!);
-		this.setPlayer();
+	public loadMap(currentMap = this.currentMap, playerPos: Position | null = null): void {
+		this.clearEvents();
+		this.clearEntities();
+		this.clearItems();
+		this.clearRules();
+
+		this.field = this.builder!.getPresetMap(currentMap!, this.assets!);
+		this.setPlayer(playerPos);
 		initStartRules();
 	}
 	public setMap(
@@ -95,6 +100,7 @@ export class Game {
 		this.clearEvents();
 		this.clearEntities();
 		this.clearItems();
+		this.clearRules();
 
 		this.field = field;
 		this.entities = entities;
@@ -234,13 +240,18 @@ export class Game {
 	public getItems(): Item[] {
 		return this.items!;
 	}
-	public setPlayer(): void {
-		for (let i = 0; i < this.field!.getWidth(); i++) {
-			for (let j = 0; j < this.field!.getHeigth(); j++) {
-				if (this.field?.cellAt(new Position(i, j)).isStart()) {
-					this.field.cellAt(new Position(i, j)).setEntity(this.player!);
-					this.player?.setPos(new Position(i, j));
-					break;
+	public setPlayer(pos: Position | null = null): void {
+		if (pos) {
+			this.field?.cellAt(pos).setEntity(this.player);
+			this.player?.setPos(pos);
+		} else {
+			for (let i = 0; i < this.field!.getWidth(); i++) {
+				for (let j = 0; j < this.field!.getHeigth(); j++) {
+					if (this.field?.cellAt(new Position(i, j)).isStart()) {
+						this.field.cellAt(new Position(i, j)).setEntity(this.player!);
+						this.player?.setPos(new Position(i, j));
+						break;
+					}
 				}
 			}
 		}

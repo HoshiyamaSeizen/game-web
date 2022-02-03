@@ -16,6 +16,7 @@ export class Cell extends Drawable {
 	private state: State;
 	private entity: Entity | null;
 	private item: Item | null;
+	private transition: Transition | null;
 	constructor(
 		state = State.normal,
 		accessible = true,
@@ -27,6 +28,7 @@ export class Cell extends Drawable {
 		this.state = state;
 		this.entity = entity;
 		this.item = item;
+		this.transition = null;
 	}
 
 	public getState(): State {
@@ -37,6 +39,9 @@ export class Cell extends Drawable {
 	}
 	public getEntity(): Entity | null {
 		return this.entity;
+	}
+	public getTransition(): Transition | null {
+		return this.transition;
 	}
 
 	public hasItem(): Boolean {
@@ -76,4 +81,14 @@ export class Cell extends Drawable {
 	public toggleAccessibility(): void {
 		this.accessible = !this.accessible;
 	}
+	public setTransition(t: Transition): void {
+		this.transition = t;
+	}
 }
+
+export type Transition = {
+	map: string;
+	x: number;
+	y: number;
+	followRules: Boolean;
+};
