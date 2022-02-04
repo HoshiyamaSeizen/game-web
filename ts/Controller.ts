@@ -70,20 +70,15 @@ export class Controller {
 				else if (this.isKeyPressed(ACTION.DROP_P)) this.action = ACTION.DROP_P;
 				else if (this.isKeyPressed(ACTION.QSAVE)) this.action = ACTION.QSAVE;
 				else if (this.isKeyPressed(ACTION.QLOAD)) this.action = ACTION.QLOAD;
-				// Service
 				else {
 					// Menu
-					if (this.pressed.has('Escape')) {
-						menu.toggle();
-					}
-					// console
+					if (this.pressed.has('Escape')) menu.toggle();
 					this.actionGiven = false;
 				}
 			}
 		}
 		this.pressed.clear();
 	}
-	private processConsole(): void {}
 
 	constructor() {
 		this.controls = _controls;

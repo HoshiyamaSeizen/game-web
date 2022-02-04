@@ -51,12 +51,12 @@ export class AssetStorage {
 	}
 	public readItems(): void {
 		let ibuilder = new ItemBuilder();
-		console.log('Reading items: ');
+		Game.getInstance().msg('Reading items: ');
 		ibuilder.getItemList().forEach((name) => {
 			this.items.set(name, ibuilder.getPresetItem(name));
-			console.log(`\t${name}`);
+			Game.getInstance().msg(`\t${name}`);
 		});
-		console.log('\n');
+		Game.getInstance().msg('\n');
 	}
 
 	public getTilesheets(): Map<string, HTMLImageElement> {

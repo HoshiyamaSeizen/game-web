@@ -101,7 +101,7 @@ export class SaveManager {
 			};
 
 			localStorage.setItem(`save ${saveIndex}`, JSON.stringify(save));
-			game.msg(`Game saved`);
+			game.msg(`Game saved\n`);
 			return true;
 		} catch (e) {
 			let message: string;
@@ -208,7 +208,7 @@ export class SaveManager {
 			player.setKeyItems(save.player.keyItems);
 
 			game.setMap(save.map, field, entities, items, player);
-			game.msg(`Save ${saveIndex} loaded`);
+			game.msg(`Save ${saveIndex} loaded\n`);
 			return true;
 		} catch (e) {
 			let message: string;
