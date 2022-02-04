@@ -41,14 +41,12 @@ export class Controller {
 			if (this.pressed.has('Escape') && Game.getInstance().hasStarted()) {
 				menu.toggle();
 			}
-			this.clearActions();
 		} else if (dialogue.opened()) {
 			if (this.pressed.has('Escape') || !dialogue.shouldProceed()) {
 				dialogue.close();
 			} else {
 				dialogue.next();
 			}
-			this.clearActions();
 		} else {
 			this.actionGiven = true;
 
@@ -83,6 +81,7 @@ export class Controller {
 				}
 			}
 		}
+		this.pressed.clear();
 	}
 	private processConsole(): void {}
 
@@ -119,7 +118,6 @@ export class Controller {
 	}
 	public clearActions(): void {
 		this.actionGiven = false;
-		this.pressed.clear();
 	}
 	public hasAction(): Boolean {
 		return this.actionGiven;
