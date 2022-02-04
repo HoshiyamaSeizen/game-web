@@ -199,7 +199,7 @@ export class Drawer {
 		this.ctx.fillRect(0, boxStart, this.canvas.width, fontSize + offset * 2);
 
 		// name
-		let nameBoxOffsetY = 10;
+		let nameBoxOffsetY = 8;
 		let nameBoxOffsetX = 40;
 		let nameOffsetY = offset - nameBoxOffsetY;
 		let nameOffsetX = 8;
