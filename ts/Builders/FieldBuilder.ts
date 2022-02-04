@@ -46,7 +46,7 @@ export class FieldBuilder implements Builder {
 		}
 		this.field.cellAt(pos).setState(State.start);
 	}
-	public setFinish(pos: Position, transition: Transition | null = null): void {
+	public setFinish(pos: Position, transition?: Transition): void {
 		this.field.cellAt(pos).setState(State.finish);
 		if (transition) this.field.cellAt(pos).setTransition(transition);
 	}
@@ -92,10 +92,7 @@ export class FieldBuilder implements Builder {
 						this.setStart(new Position(i, j));
 						break;
 					case 'f':
-						this.setFinish(
-							new Position(i, j),
-							transitions.length ? <Transition>transitions.shift() : null
-						);
+						this.setFinish(new Position(i, j), <Transition>transitions.shift());
 						break;
 					case 'b':
 						this.toggleCellAccessibility(new Position(i, j));

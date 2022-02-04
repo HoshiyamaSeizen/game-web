@@ -1,8 +1,8 @@
 import { Sprite } from './../Storage';
 
 export class Drawable {
-	protected sprite: Sprite | null = null;
-	protected spriteWhenUsed: Sprite | null = null;
+	protected sprite?: Sprite;
+	protected spriteWhenUsed?: Sprite;
 
 	public getSprite(): Sprite {
 		return this.sprite!;

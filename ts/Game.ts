@@ -16,9 +16,8 @@ import { Field } from './Map/Field';
 import { Menu } from './Menu';
 
 export class Game {
-	private static instance: Game | null = null;
+	private static instance?: Game;
 	private constructor() {
-		this.player = null;
 		this.playersTurn = true;
 		this.gameActive = false;
 		this.entities = [];
@@ -33,19 +32,19 @@ export class Game {
 	private gameStarted: Boolean;
 	private gameActive: Boolean;
 	private playersTurn: Boolean;
-	private currentMap: string | null = null;
-	private builder: FieldBuilder | null = null;
-	private field: Field | null = null;
-	private player: Player | null = null;
+	private currentMap?: string;
+	private builder?: FieldBuilder;
+	private field?: Field;
+	private player?: Player;
 	private entities: Entity[];
 	private items: Item[];
 	private events: GameEvent[];
-	private assets: AssetStorage | null = null;
-	private saveManager: SaveManager | null = null;
-	private menu: Menu | null = null;
-	private dialogue: Dialogue | null = null;
-	private controller: Controller | null = null;
-	private drawer: Drawer | null = null;
+	private assets?: AssetStorage;
+	private saveManager?: SaveManager;
+	private menu?: Menu;
+	private dialogue?: Dialogue;
+	private controller?: Controller;
+	private drawer?: Drawer;
 	private move: number;
 	private startRules: GameRule[];
 	private finishRules: GameRule[];
@@ -79,7 +78,7 @@ export class Game {
 	public isPlayersTurn(): Boolean {
 		return this.playersTurn;
 	}
-	public loadMap(currentMap = this.currentMap, playerPos: Position | null = null): void {
+	public loadMap(currentMap = this.currentMap, playerPos?: Position): void {
 		this.clearEvents();
 		this.clearEntities();
 		this.clearItems();
@@ -241,9 +240,9 @@ export class Game {
 	public getItems(): Item[] {
 		return this.items!;
 	}
-	public setPlayer(pos: Position | null = null): void {
+	public setPlayer(pos?: Position): void {
 		if (pos) {
-			this.field?.cellAt(pos).setEntity(this.player);
+			this.field?.cellAt(pos).setEntity(this.player!);
 			this.player?.setPos(pos);
 		} else {
 			for (let i = 0; i < this.field!.getWidth(); i++) {
@@ -317,7 +316,7 @@ export class Game {
 	public countItems(): number {
 		return this.items.length;
 	}
-	public removeDuplicateKeyItems(name: string | null = null): void {
+	public removeDuplicateKeyItems(name?: string): void {
 		if (name) this.removeItemByName(name, true);
 		else
 			this.player?.getKeyItems().forEach((name) => {

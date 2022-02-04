@@ -52,7 +52,7 @@ export class WanderStrategy implements Strategy {
 			return;
 		}
 		let next = bfsToPosition(2, pos, player.getPos());
-		if (next !== null) this.entity.movePos(next);
+		if (next) this.entity.movePos(next);
 		else this.entity.move(randDir());
 	}
 	public clone(entity: Entity): Strategy {
@@ -73,7 +73,7 @@ export class HuntStrategy implements Strategy {
 			return;
 		}
 		let next = bfsToPosition(10, pos, player.getPos());
-		if (next !== null) this.entity.movePos(next);
+		if (next) this.entity.movePos(next);
 		else this.entity.move(randDir());
 	}
 	public clone(entity: Entity): Strategy {

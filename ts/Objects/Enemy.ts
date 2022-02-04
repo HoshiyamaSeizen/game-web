@@ -10,7 +10,7 @@ import { Condition } from '../Rules/GameRule';
 
 export class Enemy extends GameObject implements Entity {
 	private name: string;
-	private strategy: Strategy | null;
+	private strategy?: Strategy;
 	private health: number;
 	private maxHealth: number;
 	private armor: number;
@@ -23,7 +23,6 @@ export class Enemy extends GameObject implements Entity {
 		this.armor = armor;
 		this.damage = damage;
 		this.reward = reward;
-		this.strategy = null;
 		this.name = '';
 	}
 	public act(): void {

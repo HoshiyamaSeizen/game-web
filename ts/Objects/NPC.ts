@@ -12,7 +12,7 @@ export enum TalkType {
 
 export class NPC extends GameObject implements Entity {
 	private name: string;
-	private strategy: Strategy | null;
+	private strategy?: Strategy;
 	private phrases: string[];
 	private tType: TalkType;
 	private phraseCount: number;
@@ -24,7 +24,6 @@ export class NPC extends GameObject implements Entity {
 		this.tType = TalkType.RANDOM;
 		this.phraseIndex = 0;
 		this.phraseCount = 0;
-		this.strategy = null;
 		this.name = '';
 	}
 	public changeStat(stat: Condition, value: number): void {}

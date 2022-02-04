@@ -114,7 +114,7 @@ export class SaveManager {
 	public load(saveIndex: number): Boolean {
 		try {
 			let saveJSON = localStorage.getItem(`save ${saveIndex}`);
-			if (saveJSON === null) throw new Error('Error: Save not found');
+			if (!saveJSON) throw new Error('Error: Save not found');
 
 			let save: saveStructure = JSON.parse(saveJSON);
 
