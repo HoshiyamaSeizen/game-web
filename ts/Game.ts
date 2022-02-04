@@ -3,13 +3,13 @@ import { initStartRules } from './Rules/RuleChecker';
 import { GameRule } from './Rules/GameRule';
 import { Enemy } from './Objects/Enemy';
 import { FieldBuilder } from './Builders/FieldBuilder';
-import { Position } from './Positioning';
+import { Position, changePos } from './Positioning';
 import { Drawer } from './Drawer';
 import { Controller, ACTION } from './Controller';
 import { SaveManager } from './SaveManager';
 import { AssetStorage } from './Storage';
 import { GameEvent } from './Event';
-import { Item } from './Objects/Item';
+import { Item, KeyItem } from './Objects/Item';
 import { Entity } from './Objects/Entity';
 import { Player } from './Objects/Player';
 import { Field } from './Map/Field';
@@ -108,7 +108,7 @@ export class Game {
 		this.items = items;
 		this.player = player;
 
-		this.setPlayerPos(player.getPos());
+		this.setPlayer(player.getPos());
 		initStartRules();
 	}
 	public performAction(action: ACTION): void {
@@ -256,9 +256,8 @@ export class Game {
 				}
 			}
 		}
-	}
-	public setPlayerPos(pos: Position): void {
-		this.field?.cellAt(pos).setEntity(this.player!);
+
+		this.removeDuplicateKeyItems();
 	}
 	public getStorage(): AssetStorage {
 		return this.assets!;
@@ -282,11 +281,32 @@ export class Game {
 	public clearItems(): void {
 		this.items.length = 0;
 	}
-	public removeEntity(e: Entity): void {
-		this.entities = this.entities.filter((entity) => entity != e);
+	public removeEntity(e: Entity, removeFromField = false): void {
+		this.entities = this.entities.filter((entity) => {
+			if (entity == e) {
+				if (removeFromField) this.field?.cellAt(e.getPos()).setEntity(null);
+				return false;
+			}
+			return true;
+		});
 	}
-	public removeItem(i: Item): void {
-		this.items = this.items.filter((item) => item != i);
+	public removeItem(i: Item, removeFromField = false): void {
+		this.items = this.items.filter((item) => {
+			if (item == i) {
+				if (removeFromField) this.field?.cellAt(i.getPos()).setItem(null);
+				return false;
+			}
+			return true;
+		});
+	}
+	public removeItemByName(name: string, removeFromField = false): void {
+		this.items = this.items.filter((item) => {
+			if (item.getName() == name) {
+				if (removeFromField) this.field?.cellAt(item.getPos()).setItem(null);
+				return false;
+			}
+			return true;
+		});
 	}
 	public isEntityOnField(e: Entity): Boolean {
 		return this.entities.includes(e);
@@ -296,6 +316,13 @@ export class Game {
 	}
 	public countItems(): number {
 		return this.items.length;
+	}
+	public removeDuplicateKeyItems(name: string | null = null): void {
+		if (name) this.removeItemByName(name, true);
+		else
+			this.player?.getKeyItems().forEach((name) => {
+				this.removeItemByName(name, true);
+			});
 	}
 
 	public pushEvent(e: GameEvent): void {

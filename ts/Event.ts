@@ -13,6 +13,7 @@ export enum eType {
 	finishEvent,
 	goalsNotMet,
 	notEnoughMoney,
+	missingKeyItem,
 }
 export enum sourceType {
 	PLAYER,
@@ -90,6 +91,9 @@ export class GameEvent {
 				break;
 			case eType.notEnoughMoney:
 				result = `you don't have enough money. You need ${this.numValue}`;
+				break;
+			case eType.missingKeyItem:
+				result = `you need ${this.subject} to proceed`;
 				break;
 			default:
 				return ' ';

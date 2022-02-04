@@ -306,3 +306,39 @@ export class Potion extends GameObject implements Item {
 		return item;
 	}
 }
+
+export class KeyItem extends GameObject implements Item {
+	private name: string;
+	private moneyCost: number;
+	constructor() {
+		super();
+		this.name = 'KeyItem';
+		this.moneyCost = 0;
+	}
+	changeName(name: string): void {
+		this.name = name;
+	}
+	getName(): string {
+		return this.name;
+	}
+	public setMoneyCost(cost: number): void {
+		this.moneyCost = cost;
+	}
+	public getMoneyCost(): number {
+		return this.moneyCost;
+	}
+	clone(): Item {
+		let item = new KeyItem();
+		item.name = this.name;
+		item.moneyCost = this.moneyCost;
+		item.sprite = this.sprite;
+		return item;
+	}
+
+	changeStat(stat: Condition, value: number): void {}
+	decreaseDur(): void {}
+	setDur(num: number): void {}
+	getDur(): number {
+		return 0;
+	}
+}

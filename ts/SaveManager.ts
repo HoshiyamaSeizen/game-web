@@ -40,6 +40,7 @@ export class SaveManager {
 						name: '',
 						dur: 0,
 					},
+					keyItems: [],
 				},
 			};
 			let game = Game.getInstance();
@@ -96,6 +97,7 @@ export class SaveManager {
 				potion: player.hasPotion()
 					? { name: player.getPotion()!.getName(), dur: player.getPotion()!.getDur() }
 					: { name: 'None', dur: 0 },
+				keyItems: player.getKeyItems(),
 			};
 
 			localStorage.setItem(`save ${saveIndex}`, JSON.stringify(save));
@@ -203,6 +205,8 @@ export class SaveManager {
 				player.setPotion(potion);
 			}
 
+			player.setKeyItems(save.player.keyItems);
+
 			game.setMap(save.map, field, entities, items, player);
 			game.msg(`Save ${saveIndex} loaded`);
 			return true;
@@ -233,5 +237,6 @@ type saveStructure = {
 		spell: { name: string; dur: number };
 		armor: { name: string; dur: number };
 		potion: { name: string; dur: number };
+		keyItems: string[];
 	};
 };

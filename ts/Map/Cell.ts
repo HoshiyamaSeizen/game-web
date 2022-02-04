@@ -91,4 +91,5 @@ export type Transition = {
 	x: number;
 	y: number;
 	followRules: Boolean;
+	key: string | null;
 };

@@ -3,7 +3,7 @@ import { checkFinishRules } from './../Rules/RuleChecker';
 import { eType, sourceType } from './../Event';
 import { changePos, Position, findDir } from './../Positioning';
 import { Game } from './../Game';
-import { Potion, Spell, Armor, Weapon, pType } from './Item';
+import { Potion, Spell, Armor, Weapon, pType, KeyItem } from './Item';
 import { Direction } from '../Positioning';
 import { Entity } from './Entity';
 import { GameObject } from './Object';
@@ -29,6 +29,7 @@ export class Player extends GameObject implements Entity {
 	private armor: Armor | null = null;
 	private spell: Spell | null = null;
 	private potion: Potion | null = null;
+	private keyItems: string[];
 
 	constructor(
 		mHealth = MAX_HP_DEFAULT,
@@ -45,6 +46,7 @@ export class Player extends GameObject implements Entity {
 		this.mana = mMana;
 		this.damage = damage;
 		this.money = 0;
+		this.keyItems = [];
 		this.name = 'you';
 	}
 
@@ -101,8 +103,16 @@ export class Player extends GameObject implements Entity {
 			Game.getInstance().playerActed();
 			if (f.cellAt(this.pos).isFinish()) {
 				let transition = f.cellAt(this.pos).getTransition();
-				if (transition && (!transition.followRules || checkFinishRules())) {
+				if (
+					transition &&
+					(!transition.followRules || checkFinishRules()) &&
+					(!transition.key || this.keyItems.includes(transition.key))
+				) {
 					Game.getInstance().loadMap(transition.map, new Position(transition.x, transition.y));
+				} else if (transition && transition.key && !this.keyItems.includes(transition.key)) {
+					Game.getInstance().pushEvent(
+						new GameEvent(sourceType.PLAYER, eType.missingKeyItem, transition.key)
+					);
 				} else if (checkFinishRules()) {
 					Game.getInstance().pushEvent(new GameEvent(sourceType.PLAYER, eType.finishEvent));
 					Game.getInstance().endGame();
@@ -256,6 +266,9 @@ export class Player extends GameObject implements Entity {
 			} else if (item instanceof Potion) {
 				if (this.potion) this.dropPotion();
 				this.potion = item;
+			} else if (item instanceof KeyItem) {
+				this.keyItems.push(item.getName());
+				Game.getInstance().removeDuplicateKeyItems(item.getName());
 			}
 			Game.getInstance().playerActed();
 			Game.getInstance().pushEvent(
@@ -320,6 +333,9 @@ export class Player extends GameObject implements Entity {
 	public getPotion(): Potion | null {
 		return this.potion;
 	}
+	public getKeyItems(): string[] {
+		return this.keyItems;
+	}
 	public getName(): string {
 		return this.name;
 	}
@@ -345,6 +361,9 @@ export class Player extends GameObject implements Entity {
 	public setPotion(p: Potion | null): void {
 		this.potion = p;
 	}
+	public setKeyItems(items: string[]): void {
+		this.keyItems = items;
+	}
 
 	public hasWeapon(): Boolean {
 		return this.weapon != null;
@@ -357,6 +376,9 @@ export class Player extends GameObject implements Entity {
 	}
 	public hasPotion(): Boolean {
 		return this.potion != null;
+	}
+	public hasKeyItems(): Boolean {
+		return this.keyItems.length != 0;
 	}
 
 	public getMoney(): number {

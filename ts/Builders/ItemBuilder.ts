@@ -1,4 +1,4 @@
-import { Item, Weapon, pType, Spell, Potion, Armor } from './../Objects/Item';
+import { Item, Weapon, pType, Spell, Potion, Armor, KeyItem } from './../Objects/Item';
 import { Sprite } from './../Storage';
 import { Builder } from './Builder';
 
@@ -22,6 +22,9 @@ export class ItemBuilder implements Builder {
 	public newArmor(armor = 1, durability = 10): void {
 		this.item = new Armor(armor, durability);
 	}
+	public newKeyItem(): void {
+		this.item = new KeyItem();
+	}
 	public setName(name: string): void {
 		this.item.changeName(name);
 	}
@@ -37,17 +40,15 @@ export class ItemBuilder implements Builder {
 	public buildPresetItem(name: string): void {
 		let itemInfo = items.find((item) => item.name == name)!;
 
-		if (itemInfo.type == 'weapon') {
-			this.newWeapon(itemInfo.dam, itemInfo.cost, itemInfo.dur);
-		} else if (itemInfo.type == 'spell') {
+		if (itemInfo.type == 'weapon') this.newWeapon(itemInfo.dam, itemInfo.cost, itemInfo.dur);
+		else if (itemInfo.type == 'spell')
 			this.newSpell(itemInfo.dam, itemInfo.cost, itemInfo.charges);
-		} else if (itemInfo.type == 'armor') {
-			this.newArmor(itemInfo.armor, itemInfo.dur);
-		} else if (itemInfo.type == 'potion') {
+		else if (itemInfo.type == 'armor') this.newArmor(itemInfo.armor, itemInfo.dur);
+		else if (itemInfo.type == 'potion') {
 			let type =
 				itemInfo.pType == 'HP' ? pType.HP : itemInfo.pType == 'MP' ? pType.MP : pType.SP;
 			this.newPotion(type, itemInfo.amount);
-		}
+		} else if (itemInfo.type == 'key') this.newKeyItem();
 
 		this.setName(itemInfo.name);
 		this.setCost(itemInfo.money);
