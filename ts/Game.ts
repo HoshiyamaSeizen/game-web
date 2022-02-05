@@ -168,15 +168,14 @@ export class Game {
 		if (this.gameActive) return;
 		else this.gameActive = true;
 
-		// Open Menu
-		this.menu = new Menu();
-
 		this.controller = new Controller();
 		this.drawer = new Drawer();
 		this.saveManager = new SaveManager();
 		this.builder = new FieldBuilder();
-		this.saveManager = new SaveManager();
 		this.dialogue = new Dialogue();
+
+		// Open Menu
+		this.menu = new Menu();
 
 		// Resize canvas when window resizes
 		this.drawer.addResizeListener();
@@ -356,6 +355,9 @@ export class Game {
 	}
 	public getSaveManager(): SaveManager {
 		return this.saveManager!;
+	}
+	public getController(): Controller {
+		return this.controller!;
 	}
 	public getCurrentMap(): string {
 		return this.currentMap!;

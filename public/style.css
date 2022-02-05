@@ -1,3 +1,10 @@
+:root {
+	--color1: hsl(30, 25%, 65%);
+	--color2: hsl(30, 80%, 5%);
+	--color3: hsl(30, 25%, 60%);
+	--color4: hsl(120, 25%, 65%);
+}
+
 @font-face {
 	font-family: Pixeboy;
 	src: url('./assets/Pixeboy.ttf');
@@ -8,32 +15,117 @@
 	src: url('./assets/PixeloidSans.ttf');
 }
 
+*,
+*::before,
+*::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	cursor: url('assets/cursor.cur'), auto;
+}
+
 html,
 body {
-	margin: 0 !important;
-	padding: 0 !important;
 	overflow: hidden;
+}
+
+[hidden] {
+	display: none !important;
+}
+
+h1,
+button {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 #canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-color: rgb(100, 23, 55);
-	z-index: 0;
+}
+
+#menu-overlay {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: hsl(335, 65%, 25%);
+	opacity: 1;
+	transition: all 1s;
 }
 
 #game-menu {
 	position: absolute;
-	width: 40%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	width: 30%;
 	height: 80%;
+	min-height: 630px;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	background-color: blanchedalmond;
-	z-index: 1;
+	background: var(--color1);
+	border: 6px solid var(--color2);
+	opacity: 1;
+	transition: all 1s;
 }
 
-button.selected {
-	background: rgb(228, 193, 193);
+#game-menu.hidden,
+#menu-overlay.hidden {
+	visibility: hidden;
+	opacity: 0;
+	transform: translate(-50%, -250%);
+}
+#menu-overlay.hidden {
+	transform: none;
+}
+
+#game-menu-title {
+	color: var(--color2);
+	font-family: 'Pixeboy';
+	font-size: 4rem;
+}
+
+#game-menu button {
+	margin-top: 20px;
+	padding: 10px 0;
+	width: 80%;
+	color: var(--color1);
+	background-color: var(--color2);
+	font-family: 'PixeloidSans';
+	font-size: 1.3rem;
+	border: 2px solid var(--color2);
+	cursor: url('assets/cursor_arm.cur'), pointer;
+	transition: background-color 300ms, color 300ms;
+}
+
+#game-menu button:active {
+	transform: translateY(2px);
+}
+
+#game-menu button.focused {
+	color: var(--color2);
+	background-color: var(--color3);
+}
+
+#game-menu button.selected {
+	color: var(--color2);
+	background: var(--color4);
+}
+
+#btn-save-3 {
+	margin-bottom: 20px;
+}
+
+#controls-list p {
+	margin-top: 0.5rem;
+	font: 1.1rem 'PixeloidSans';
+	color: var(--color2);
 }

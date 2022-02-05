@@ -38,8 +38,14 @@ export class Controller {
 		let dialogue = Game.getInstance().getDialogue();
 
 		if (menu.opened()) {
-			if (this.pressed.has('Escape') && Game.getInstance().hasStarted()) {
-				menu.toggle();
+			if (this.pressed.has('Escape')) {
+				menu.processEscape();
+			} else if (this.pressed.has('Enter')) {
+				this.click(menu.getFocusedButton());
+			} else if (this.pressed.has('ArrowUp') || this.pressed.has('ArrowLeft')) {
+				menu.prevButton();
+			} else if (this.pressed.has('ArrowDown') || this.pressed.has('ArrowRight')) {
+				menu.nextButton();
 			}
 		} else if (dialogue.opened()) {
 			if (this.pressed.has('Escape') || !dialogue.shouldProceed()) {
@@ -116,5 +122,39 @@ export class Controller {
 	}
 	public hasAction(): Boolean {
 		return this.actionGiven;
+	}
+
+	private getActionControls(action: ACTION): string {
+		return this.controls[<string>action];
+	}
+
+	public getControlsString(): string[] {
+		let arr: string[] = [];
+		arr.push(
+			`Move: ${this.getActionControls(ACTION.UP)}, ${this.getActionControls(
+				ACTION.LEFT
+			)}, ${this.getActionControls(ACTION.DOWN)}, ${this.getActionControls(ACTION.RIGHT)}`
+		);
+		arr.push(`Hit/Talk: ${this.getActionControls(ACTION.HIT)} + move`);
+		arr.push(`Cast spell: ${this.getActionControls(ACTION.CAST)} + move`);
+		arr.push(`Sleep: ${this.getActionControls(ACTION.SLEEP)}`);
+		arr.push(`Drink potion: ${this.getActionControls(ACTION.BUFF)}`);
+		arr.push(`Pick up: ${this.getActionControls(ACTION.PICK_UP)}`);
+		arr.push(`Drop weapon: ${this.getActionControls(ACTION.DROP_W)}`);
+		arr.push(`Drop spell: ${this.getActionControls(ACTION.DROP_S)}`);
+		arr.push(`Drop armor: ${this.getActionControls(ACTION.DROP_A)}`);
+		arr.push(`Drop potion: ${this.getActionControls(ACTION.DROP_P)}`);
+		arr.push(`Quick save: ${this.getActionControls(ACTION.QSAVE)}`);
+		arr.push(`Quick load: ${this.getActionControls(ACTION.QLOAD)}`);
+		return arr;
+	}
+
+	private click(element: HTMLElement): void {
+		let clickEvent = new MouseEvent('click', {
+			view: window,
+			bubbles: true,
+			cancelable: false,
+		});
+		element.dispatchEvent(clickEvent);
 	}
 }
