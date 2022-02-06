@@ -158,7 +158,7 @@ export class Player extends GameObject implements Entity {
 		let requiredMP = this.spell ? this.spell.getCost() : 0;
 
 		let hitPos = changePos(this.pos, dir);
-		if (f.isInField(hitPos) && !f.cellAt(hitPos).isFree()) {
+		if (f.isInField(hitPos) && !f.cellAt(hitPos).isFree() && f.cellAt(hitPos).isAccessible()) {
 			let ent = f.cellAt(hitPos).getEntity()!;
 			if (ent instanceof NPC) {
 				this.talk(ent);
@@ -195,11 +195,11 @@ export class Player extends GameObject implements Entity {
 				this.health =
 					this.health + amount >= this.maxHealth ? this.maxHealth : this.health + amount;
 				typeStr = 'HP';
-			} else if (type == pType.MP) {
+			} else if (type == pType.SP) {
 				this.stamina =
 					this.stamina + amount >= this.maxStamina ? this.maxStamina : this.stamina + amount;
 				typeStr = 'SP';
-			} else if (type == pType.SP) {
+			} else if (type == pType.MP) {
 				this.mana = this.mana + amount >= this.maxMana ? this.maxMana : this.mana + amount;
 				typeStr = 'MP';
 			}
@@ -252,6 +252,7 @@ export class Player extends GameObject implements Entity {
 				return;
 			}
 			this.money -= item.getMoneyCost();
+			item.setMoneyCost(0);
 			f.cellAt(this.pos).setItem(null);
 			Game.getInstance().removeItem(item);
 			if (item instanceof Weapon) {
@@ -280,6 +281,7 @@ export class Player extends GameObject implements Entity {
 		let f = Game.getInstance().getField()!;
 		if (!f.cellAt(this.pos).hasItem() && this.weapon) {
 			f.cellAt(this.pos).setItem(this.weapon);
+			this.weapon.setPos(this.pos);
 			Game.getInstance().addItem(this.weapon);
 			Game.getInstance().pushEvent(
 				new GameEvent(sourceType.PLAYER, eType.dropEvent, this.weapon.getName())
@@ -291,6 +293,7 @@ export class Player extends GameObject implements Entity {
 		let f = Game.getInstance().getField()!;
 		if (!f.cellAt(this.pos).hasItem() && this.spell) {
 			f.cellAt(this.pos).setItem(this.spell);
+			this.spell.setPos(this.pos);
 			Game.getInstance().addItem(this.spell);
 			Game.getInstance().pushEvent(
 				new GameEvent(sourceType.PLAYER, eType.dropEvent, this.spell.getName())
@@ -302,6 +305,7 @@ export class Player extends GameObject implements Entity {
 		let f = Game.getInstance().getField()!;
 		if (!f.cellAt(this.pos).hasItem() && this.potion) {
 			f.cellAt(this.pos).setItem(this.potion);
+			this.potion.setPos(this.pos);
 			Game.getInstance().addItem(this.potion);
 			Game.getInstance().pushEvent(
 				new GameEvent(sourceType.PLAYER, eType.dropEvent, this.potion.getName())
@@ -313,6 +317,7 @@ export class Player extends GameObject implements Entity {
 		let f = Game.getInstance().getField()!;
 		if (!f.cellAt(this.pos).hasItem() && this.armor) {
 			f.cellAt(this.pos).setItem(this.armor);
+			this.armor.setPos(this.pos);
 			Game.getInstance().addItem(this.armor);
 			Game.getInstance().pushEvent(
 				new GameEvent(sourceType.PLAYER, eType.dropEvent, this.armor.getName())

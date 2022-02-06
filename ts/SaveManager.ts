@@ -27,18 +27,22 @@ export class SaveManager {
 					weapon: {
 						name: '',
 						dur: 0,
+						money: 0,
 					},
 					spell: {
 						name: '',
 						dur: 0,
+						money: 0,
 					},
 					armor: {
 						name: '',
 						dur: 0,
+						money: 0,
 					},
 					potion: {
 						name: '',
 						dur: 0,
+						money: 0,
 					},
 					keyItems: [],
 				},
@@ -73,6 +77,7 @@ export class SaveManager {
 					x: pos.x,
 					y: pos.y,
 					dur: i.getDur(),
+					money: i.getMoneyCost(),
 				});
 			});
 			save.itemCount = count;
@@ -86,17 +91,33 @@ export class SaveManager {
 				mp: player.getMP(),
 				money: player.getMoney(),
 				weapon: player.hasWeapon()
-					? { name: player.getWeapon()!.getName(), dur: player.getWeapon()!.getDur() }
-					: { name: 'None', dur: 0 },
+					? {
+							name: player.getWeapon()!.getName(),
+							dur: player.getWeapon()!.getDur(),
+							money: player.getWeapon()!.getMoneyCost(),
+					  }
+					: { name: 'None', dur: 0, money: 0 },
 				spell: player.hasSpell()
-					? { name: player.getSpell()!.getName(), dur: player.getSpell()!.getDur() }
-					: { name: 'None', dur: 0 },
+					? {
+							name: player.getSpell()!.getName(),
+							dur: player.getSpell()!.getDur(),
+							money: player.getSpell()!.getMoneyCost(),
+					  }
+					: { name: 'None', dur: 0, money: 0 },
 				armor: player.hasArmor()
-					? { name: player.getArmor()!.getName(), dur: player.getArmor()!.getDur() }
-					: { name: 'None', dur: 0 },
+					? {
+							name: player.getArmor()!.getName(),
+							dur: player.getArmor()!.getDur(),
+							money: player.getArmor()!.getMoneyCost(),
+					  }
+					: { name: 'None', dur: 0, money: 0 },
 				potion: player.hasPotion()
-					? { name: player.getPotion()!.getName(), dur: player.getPotion()!.getDur() }
-					: { name: 'None', dur: 0 },
+					? {
+							name: player.getPotion()!.getName(),
+							dur: player.getPotion()!.getDur(),
+							money: player.getPotion()!.getMoneyCost(),
+					  }
+					: { name: 'None', dur: 0, money: 0 },
 				keyItems: player.getKeyItems(),
 			};
 
@@ -150,6 +171,7 @@ export class SaveManager {
 				if (!storage.checkItem(i.name)) throw new Error(`Error: Itme ${i.name} not found`);
 				let item = storage.getItems().get(i.name)!.clone();
 				item.changeStat(Condition.DUR, i.dur);
+				item.changeStat(Condition.PRICE, i.money);
 
 				pos = new Position(i.x, i.y);
 				if (!builder.canItemBeSet(pos)) throw new Error('Error while placing an item');
@@ -175,15 +197,17 @@ export class SaveManager {
 					throw new Error(`Error: Item ${item.name} not found`);
 				let weapon = <Weapon>storage.getItems().get(item.name)!.clone();
 				weapon.changeStat(Condition.DUR, item.dur);
+				weapon.changeStat(Condition.PRICE, item.money);
 				player.setWeapon(weapon);
 			}
 
-			item = save.player.weapon;
+			item = save.player.spell;
 			if (item.name != 'None') {
 				if (!storage.checkItem(item.name))
 					throw new Error(`Error: Itme ${item.name} not found`);
 				let spell = <Spell>storage.getItems().get(item.name)!.clone();
 				spell.changeStat(Condition.DUR, item.dur);
+				spell.changeStat(Condition.PRICE, item.money);
 				player.setSpell(spell);
 			}
 
@@ -193,6 +217,7 @@ export class SaveManager {
 					throw new Error(`Error: Itme ${item.name} not found`);
 				let armor = <Armor>storage.getItems().get(item.name)!.clone();
 				armor.changeStat(Condition.DUR, item.dur);
+				armor.changeStat(Condition.PRICE, item.money);
 				player.setArmor(armor);
 			}
 
@@ -202,6 +227,7 @@ export class SaveManager {
 					throw new Error(`Error: Itme ${item.name} not found`);
 				let potion = <Potion>storage.getItems().get(item.name)!.clone();
 				potion.changeStat(Condition.DUR, item.dur);
+				potion.changeStat(Condition.PRICE, item.money);
 				player.setPotion(potion);
 			}
 
@@ -225,7 +251,7 @@ type saveStructure = {
 	entityCount: number;
 	entities: { name: string; x: number; y: number; hp: number }[];
 	itemCount: number;
-	items: { name: string; x: number; y: number; dur: number }[];
+	items: { name: string; x: number; y: number; dur: number; money: number }[];
 	player: {
 		x: number;
 		y: number;
@@ -233,10 +259,10 @@ type saveStructure = {
 		sp: number;
 		mp: number;
 		money: number;
-		weapon: { name: string; dur: number };
-		spell: { name: string; dur: number };
-		armor: { name: string; dur: number };
-		potion: { name: string; dur: number };
+		weapon: { name: string; dur: number; money: number };
+		spell: { name: string; dur: number; money: number };
+		armor: { name: string; dur: number; money: number };
+		potion: { name: string; dur: number; money: number };
 		keyItems: string[];
 	};
 };
