@@ -12,6 +12,7 @@ export class Menu {
 	private controlsList: HTMLDivElement;
 	private focusedIndex: number;
 	private title: HTMLHeadingElement;
+	private endTitle: HTMLHeadElement;
 	private saveBtnIndex: number;
 
 	constructor() {
@@ -27,6 +28,7 @@ export class Menu {
 		this.saveMenuButtons = this.initSaveMenuButtons();
 		this.title = <HTMLHeadingElement>document.getElementById('game-menu-title')!;
 		this.controlsList = <HTMLDivElement>document.getElementById('controls-list')!;
+		this.endTitle = <HTMLHeadingElement>document.getElementById('game-result')!;
 		this.initControlsList();
 
 		this.toggle();
@@ -257,5 +259,11 @@ export class Menu {
 		)
 			this.prevButton();
 		this.setButtons();
+	}
+
+	public endScreen(dead = true): void {
+		this.menuOverlay.classList.remove('hidden');
+		this.endTitle.hidden = false;
+		this.endTitle.innerHTML = dead ? 'GAME OVER' : 'YOU WON!';
 	}
 }

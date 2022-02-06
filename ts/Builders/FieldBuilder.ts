@@ -145,7 +145,8 @@ export class FieldBuilder implements Builder {
 		// Rules
 		Game.getInstance().clearRules(true);
 		Game.getInstance().clearRules(false);
-		map.startRules.concat(map.finishRules).forEach((rule) => parseRules(rule.split('.')));
+		map.startRules.forEach((rule) => parseRules(rule.split('.')));
+		map.finishRules.forEach((rule) => parseRules(rule.split('.')));
 	}
 
 	public getPresetMap(name: string, assets: AssetStorage): Field {

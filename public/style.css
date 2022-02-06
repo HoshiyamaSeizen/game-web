@@ -3,6 +3,7 @@
 	--color2: hsl(30, 80%, 5%);
 	--color3: hsl(30, 25%, 60%);
 	--color4: hsl(120, 25%, 65%);
+	--color5: hsl(335, 65%, 25%);
 }
 
 @font-face {
@@ -53,7 +54,7 @@ button {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background-color: hsl(335, 65%, 25%);
+	background-color: var(--color5);
 	opacity: 1;
 	transition: all 1s;
 }
@@ -128,4 +129,18 @@ button {
 	margin-top: 0.5rem;
 	font: 1.1rem 'PixeloidSans';
 	color: var(--color2);
+}
+
+#game-result {
+	position: absolute;
+	width: 60%;
+	padding: 30px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font: 8rem 'Pixeboy';
+	text-align: center;
+	color: var(--color5);
+	background-color: var(--color1);
+	border: 20px solid var(--color3);
 }

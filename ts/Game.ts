@@ -60,6 +60,7 @@ export class Game {
 	}
 	public endGame(): void {
 		this.gameActive = false;
+		this.menu?.endScreen(this.player!.getHP() <= 0);
 	}
 	public playerActed(): void {
 		this.clearEvents();
@@ -165,8 +166,7 @@ export class Game {
 		}
 	}
 	public start(): void {
-		if (this.gameActive) return;
-		else this.gameActive = true;
+		this.gameActive = true;
 
 		this.controller = new Controller();
 		this.drawer = new Drawer();
@@ -200,7 +200,6 @@ export class Game {
 		let elapsed: number;
 		const step = (timestamp: number) => {
 			if (!this.menu!.opened()) {
-				// if(!this.isActive()) ...
 				if (!this.playersTurn) {
 					this.processEntities();
 				} else if (this.controller!.hasAction()) {

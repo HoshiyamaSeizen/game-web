@@ -97,6 +97,7 @@ export class Controller {
 		document.onwheel = (e) => this.readInput(e);
 	}
 	public readInput(e: Event, keyDown = true) {
+		if (!Game.getInstance().isActive()) return;
 		if (e instanceof KeyboardEvent) {
 			let code = e.code;
 			if (keyDown) {
