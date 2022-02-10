@@ -1,8 +1,8 @@
 {
 	"name": "game",
 	"version": "1.0.0",
-	"description": "Simple 2d game",
-	"main": "./js/main.js",
+	"description": "Simple 2D web browser game",
+	"main": "main.js",
 	"keywords": [
 		"HTML",
 		"CSS",
@@ -11,11 +11,12 @@
 		"ts",
 		"TypeScript",
 		"NodeJS",
-		"Webpack"
+		"webpack",
+		"game"
 	],
 	"scripts": {
-		"dev": "webpack-dev-server",
 		"build": "webpack",
+		"dev": "webpack-dev-server",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "hoshiyama",

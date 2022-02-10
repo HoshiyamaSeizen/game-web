@@ -10,6 +10,10 @@ module.exports = {
 	},
 	resolve: {
 		extensions: ['.ts', '.js'],
+		alias: {
+			Assets: path.resolve(__dirname, 'public/assets'),
+			Data: path.resolve(__dirname, 'public/data'),
+		},
 	},
 	module: {
 		rules: [
@@ -20,7 +24,6 @@ module.exports = {
 			},
 		],
 	},
-	//devtool: 'eval-source-map',
 	devServer: {
 		static: {
 			directory: path.join(__dirname, 'public'),
