@@ -30,5 +30,13 @@
 		"def": 10,
 		"dam": 10,
 		"money": 100
+	},
+	{
+		"name": "Majin",
+		"strategy": "hunt",
+		"hp": 1000,
+		"def": 20,
+		"dam": 50,
+		"money": 10000
 	}
 ]

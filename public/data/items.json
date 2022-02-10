@@ -2,26 +2,42 @@
 	{
 		"name": "Iron_Sword",
 		"type": "weapon",
+		"dam": 30,
+		"cost": 3,
+		"dur": 50,
+		"money": 0
+	},
+	{
+		"name": "Katana",
+		"type": "weapon",
+		"dam": 40,
+		"cost": 4,
+		"dur": 200,
+		"money": 50
+	},
+	{
+		"name": "Club",
+		"type": "weapon",
 		"dam": 10,
 		"cost": 3,
-		"dur": 2,
-		"money": 20
+		"dur": 20,
+		"money": 0
 	},
 	{
 		"name": "Fire_Spell",
 		"type": "spell",
-		"dam": 50,
-		"cost": 10,
+		"dam": 500,
+		"cost": 20,
 		"charges": 1,
-		"money": 1
+		"money": 100
 	},
 	{
 		"name": "Water_Spell",
 		"type": "spell",
-		"dam": 10,
+		"dam": 15,
 		"cost": 5,
 		"charges": 1,
-		"money": 88000
+		"money": 0
 	},
 	{
 		"name": "Leather_Armor",
@@ -31,10 +47,41 @@
 		"money": 0
 	},
 	{
+		"name": "Iron_Armor",
+		"type": "armor",
+		"armor": 30,
+		"dur": 50,
+		"money": 50
+	},
+	{
 		"name": "Healing_Potion",
 		"type": "potion",
 		"pType": "HP",
 		"amount": 50,
+		"money": 10
+	},
+	{
+		"name": "Mana_Potion",
+		"type": "potion",
+		"pType": "MP",
+		"amount": 50,
 		"money": 0
+	},
+	{
+		"name": "Stamina_Potion",
+		"type": "potion",
+		"pType": "SP",
+		"amount": 50,
+		"money": 0
+	},
+	{
+		"name": "Key",
+		"type": "key",
+		"money": 0
+	},
+	{
+		"name": "Golden_Key",
+		"type": "key",
+		"money": 100
 	}
 ]

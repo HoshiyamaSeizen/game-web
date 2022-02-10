@@ -1,18 +1,25 @@
 [
 	{
-		"name": "Townsman",
-		"strategy": "wander",
-		"talkType": "random",
+		"name": "Guide",
+		"strategy": "guard",
+		"talkType": "order",
 		"phrases": [
-			"Ad commodo nostrud tempor et. Est laboris ut ea fugiat aliquip in labore id qui occaecat eiusmod nisi esse. Dolor magna cupidatat ut aliqua excepteur culpa dolor. Quis magna Lorem nostrud velit mollit sint occaecat exercitation id sunt anim consequat.",
-			"Amogus",
-			"Zamn"
+			"*This is not a full game, just a test to see most of game mechanics",
+			"The evil Majin terrorize the country and you need to defeat him",
+			"To find him you need to enter the door to the right but you need a key for that door",
+			"You can find a key if you enter the trapdoor to the left",
+			"And be careful: Majin has an army of undead and possessed knights",
+			"Good luck"
 		]
 	},
 	{
-		"name": "Quester",
+		"name": "Merchant",
 		"strategy": "guard",
-		"talkType": "order",
-		"phrases": ["Hello", "Hello1", "Hello2"]
+		"talkType": "random",
+		"phrases": [
+			"You need credits to buy this stuff",
+			"You can find free stuff on the ground but it won't be so good",
+			"Items in the shop require money but they will serve better and longer"
+		]
 	}
 ]
