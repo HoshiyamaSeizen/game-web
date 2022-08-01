@@ -54,15 +54,15 @@ export class ItemBuilder implements Builder {
 		this.setCost(itemInfo.money);
 
 		let image = new Image();
-		image.src = `Assets/objects/items/${itemInfo.name}.png`;
+		image.src = `assets/objects/items/${itemInfo.name}.png`;
 		this.setSprite({ source: image, pos: new Position(0, 0) });
 
 		image = new Image();
 		if (itemInfo.type == 'weapon' || itemInfo.type == 'spell') {
-			image.src = `Assets/objects/items/tool/${itemInfo.name}.png`;
+			image.src = `assets/objects/items/tool/${itemInfo.name}.png`;
 			this.setUSprite({ source: image, pos: new Position(0, 0) });
 		} else if (itemInfo.type == 'armor') {
-			image.src = `Assets/objects/items/armor/${itemInfo.name}.png`;
+			image.src = `assets/objects/items/armor/${itemInfo.name}.png`;
 			this.setUSprite({ source: image, pos: new Position(0, 0) });
 		}
 	}

@@ -273,7 +273,7 @@ export class Drawer {
 	}
 	public setPlayerSprite(): void {
 		let image = new Image();
-		image.src = '../public/assets/objects/Player.png';
+		image.src = 'assets/objects/Player.png';
 		Game.getInstance()
 			.getPlayer()
 			.setSprite({ source: image, pos: new Position(0, 0) });

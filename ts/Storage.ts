@@ -25,7 +25,7 @@ export class AssetStorage {
 		let image: HTMLImageElement;
 		tilesheetList.forEach((tilesheetName) => {
 			image = new Image();
-			image.src = `../public/assets/tilesheets/${tilesheetName}.png`;
+			image.src = `assets/tilesheets/${tilesheetName}.png`;
 			this.tilesheets.set(tilesheetName, image);
 			Game.getInstance().msg(`\t${tilesheetName}`);
 		});

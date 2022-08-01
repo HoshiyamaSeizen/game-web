@@ -40,7 +40,7 @@ export class EnemyBuilder implements Builder {
 		else if (enemyInfo.strategy == 'patrol') this.setStrategy(new PatrolStrategy(this.enemy));
 
 		let image = new Image();
-		image.src = `Assets/objects/entities/${enemyInfo.name}.png`;
+		image.src = `assets/objects/entities/${enemyInfo.name}.png`;
 		this.setSprite({ source: image, pos: new Position(0, 0) });
 	}
 

@@ -46,7 +46,7 @@ export class NPCBuilder implements Builder {
 		else if (npcInfo.strategy == 'patrol') this.setStrategy(new PatrolStrategy(this.npc));
 
 		let image = new Image();
-		image.src = `Assets/objects/entities/${npcInfo.name}.png`;
+		image.src = `assets/objects/entities/${npcInfo.name}.png`;
 		this.setSprite({ source: image, pos: new Position(0, 0) });
 	}
 
