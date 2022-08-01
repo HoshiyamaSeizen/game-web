@@ -8,7 +8,9 @@ Game assets and maps can be modified. Current version in this repository serves 
 
 ## Launching
 
-To run this game, you can either open index.html in the public folder or serve it through the server.
+#### The game is live at https://hoshiyamaseizen.github.io/game-web/
+
+To run this game locally, you can either open index.html in the public folder or serve it through the server.
 
 NB: _Running the game on localhost will probably cause favicon issues in some browsers (like Chrome) so it won't display._
 
