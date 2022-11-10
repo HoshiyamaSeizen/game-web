@@ -1,2 +1,8 @@
 node_modules/
 public/old/
+test/
+report/
+
+game.zip
+game.tiled-project
+game.tiled-session
