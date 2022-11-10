@@ -1,0 +1,19 @@
+[
+	"town",
+	"dungeon",
+	"win",
+	"loss",
+	"spell",
+	"hitBlunt",
+	"hitSharp",
+	"hitHand",
+	"zombie",
+	"halt",
+	"hound",
+	"ghost",
+	"majin",
+	"kill",
+	"potion",
+	"select",
+	"sleep"
+]
