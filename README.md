@@ -10,7 +10,9 @@ The game itself is presented as a turn-based RPG. The player can kill enemies, i
 
 ## Launching
 
-To run this game, you can either open index.html in the public folder or serve it through the server.
+#### The game is live at https://hoshiyamaseizen.github.io/game-web/
+
+To run this game locally, you can either open index.html in the public folder or serve it through the server.
 
 ## Editing
 
