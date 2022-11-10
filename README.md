@@ -6,11 +6,11 @@ This is a simple web browser game built with HTML, CSS and pure JavaScript. Node
 
 Game assets and maps can be modified. Current version in this repository serves as an example for testing most of the game mechanics and therefore does not have any specific storylines or balanced character, enemies and items stats.
 
+The game itself is presented as a turn-based RPG. The player can kill enemies, interact with NPCs, pick up and use items, move around locations. Enemies have different behavior patterns and statistics; items include armor, weapons, spells, potions, and key items; moving through locations can come with certain requirements (starting requirements for the game, such as changing the player's characteristics and enemies, and requirements for moving through, such as having a key item or killing specific enemies).
+
 ## Launching
 
 To run this game, you can either open index.html in the public folder or serve it through the server.
-
-NB: _Running the game on localhost will probably cause favicon issues in some browsers (like Chrome) so it won't display._
 
 ## Editing
 
