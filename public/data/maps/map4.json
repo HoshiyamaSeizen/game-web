@@ -1,0 +1,171 @@
+{ "compressionlevel":-1,
+ "height":9,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29,
+            29, 25, 25, 25, 25, 29, 45, 37, 45, 29, 29, 29, 29, 29,
+            29, 25, 26, 27, 27, 28, 25, 25, 25, 29, 29, 29, 29, 29,
+            29, 25, 34, 35, 35, 29, 25, 25, 25, 29, 29, 29, 29, 29,
+            29, 29, 29, 43, 29, 29, 29, 29, 29, 29, 29, 45, 29, 29,
+            29, 29, 45, 25, 29, 35, 35, 35, 36, 25, 25, 25, 29, 29,
+            29, 25, 25, 25, 29, 35, 41, 35, 36, 25, 25, 25, 29, 29,
+            29, 25, 33, 25, 29, 35, 35, 35, 36, 25, 25, 25, 29, 29,
+            29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29],
+         "height":9,
+         "id":1,
+         "name":"TileLayer",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":14,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+            64, 0, 0, 0, 0, 64, 64, 0, 64, 64, 64, 64, 64, 64,
+            64, 0, 0, 0, 0, 0, 0, 0, 0, 64, 64, 64, 64, 64,
+            64, 0, 0, 0, 0, 64, 0, 0, 0, 64, 64, 64, 64, 64,
+            64, 64, 64, 0, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+            64, 64, 64, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 64,
+            64, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 64,
+            64, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 64,
+            64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64],
+         "height":9,
+         "id":2,
+         "name":"Walls",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":false,
+         "width":14,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"ObjectLayer",
+         "objects":[
+                {
+                 "class":"Transition",
+                 "height":32,
+                 "id":1,
+                 "name":"_1",
+                 "properties":[
+                        {
+                         "name":"transition",
+                         "type":"string",
+                         "value":"{ \"map\": \"map3\", \"x\": 6, \"y\": 6, \"followRules\": false, \"key\": null }"
+                        }],
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":192,
+                 "y":192
+                }, 
+                {
+                 "class":"Transition",
+                 "height":32,
+                 "id":2,
+                 "name":"_2",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":64,
+                 "y":224
+                }, 
+                {
+                 "class":"Item",
+                 "height":32,
+                 "id":3,
+                 "name":"Golden_Key",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":320,
+                 "y":192
+                }, 
+                {
+                 "class":"Enemy",
+                 "ellipse":true,
+                 "height":32,
+                 "id":4,
+                 "name":"Knight",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":256,
+                 "y":160
+                }, 
+                {
+                 "class":"Enemy",
+                 "ellipse":true,
+                 "height":32,
+                 "id":5,
+                 "name":"Knight",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":256,
+                 "y":224
+                }, 
+                {
+                 "class":"Enemy",
+                 "ellipse":true,
+                 "height":32,
+                 "id":6,
+                 "name":"Majin",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":64,
+                 "y":64
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":4,
+ "nextobjectid":7,
+ "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"audio",
+         "type":"string",
+         "value":"dungeon"
+        }, 
+        {
+         "name":"finishRules",
+         "type":"string",
+         "value":"[\"finish.entity.Majin.kill..\"]"
+        }, 
+        {
+         "name":"startRules",
+         "type":"string",
+         "value":"[\"start.entity.player.hp.1000.\",\"start.entity.player.mp.100.\",\"start.entity.player.sp.100.\"]"
+        }],
+ "renderorder":"left-up",
+ "tiledversion":"1.9.2",
+ "tileheight":32,
+ "tilesets":[
+        {
+         "columns":8,
+         "firstgid":1,
+         "image":"..\/..\/assets\/tilesheet.png",
+         "imageheight":256,
+         "imagewidth":256,
+         "margin":0,
+         "name":"tilesheet",
+         "spacing":0,
+         "tilecount":64,
+         "tileheight":32,
+         "tilewidth":32
+        }],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.9",
+ "width":14
+}

@@ -1,0 +1,229 @@
+{ "compressionlevel":-1,
+ "height":9,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+            5, 1, 1, 1, 1, 5, 21, 13, 21, 5, 5, 5, 5, 5,
+            5, 1, 2, 3, 3, 4, 1, 1, 1, 1, 1, 1, 5, 5,
+            5, 1, 10, 11, 11, 5, 1, 1, 1, 5, 5, 1, 5, 5,
+            5, 5, 5, 19, 5, 5, 5, 5, 5, 5, 5, 1, 5, 5,
+            5, 13, 21, 1, 5, 11, 11, 11, 12, 1, 1, 1, 5, 5,
+            5, 1, 1, 1, 5, 11, 17, 11, 12, 1, 1, 1, 5, 5,
+            5, 1, 1, 1, 5, 11, 11, 11, 12, 1, 1, 1, 5, 5,
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+         "height":9,
+         "id":1,
+         "name":"TileLayer",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":14,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+            64, 0, 0, 0, 0, 64, 64, 0, 64, 64, 64, 64, 64, 64,
+            64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 64,
+            64, 0, 0, 0, 0, 64, 0, 0, 0, 64, 64, 0, 64, 64,
+            64, 64, 64, 0, 64, 64, 64, 64, 64, 64, 64, 0, 64, 64,
+            64, 0, 64, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 64,
+            64, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 64,
+            64, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 64,
+            64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64],
+         "height":9,
+         "id":2,
+         "name":"Walls",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":false,
+         "width":14,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"ObjectLayer",
+         "objects":[
+                {
+                 "class":"Transition",
+                 "height":32,
+                 "id":1,
+                 "name":"_1",
+                 "properties":[
+                        {
+                         "name":"transition",
+                         "type":"string",
+                         "value":"{ \"map\": \"map1\", \"x\": 23, \"y\": 5, \"followRules\": false, \"key\": null }"
+                        }],
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":32,
+                 "y":160
+                }, 
+                {
+                 "class":"Transition",
+                 "height":32,
+                 "id":2,
+                 "name":"_2",
+                 "properties":[
+                        {
+                         "name":"transition",
+                         "type":"string",
+                         "value":"{ \"map\": \"map4\", \"x\": 7, \"y\": 2, \"followRules\": true, \"key\": \"Golden_Key\" }"
+                        }],
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":224,
+                 "y":32
+                }, 
+                {
+                 "class":"Transition",
+                 "height":32,
+                 "id":3,
+                 "name":"_3",
+                 "properties":[
+                        {
+                         "name":"transition",
+                         "type":"string",
+                         "value":"{ \"map\": \"map4\", \"x\": 6, \"y\": 6, \"followRules\": false, \"key\": null }"
+                        }],
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":192,
+                 "y":192
+                }, 
+                {
+                 "class":"Item",
+                 "height":32,
+                 "id":4,
+                 "name":"Mana_Potion",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":64,
+                 "y":224
+                }, 
+                {
+                 "class":"Item",
+                 "height":32,
+                 "id":5,
+                 "name":"Stamina_Potion",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":96,
+                 "y":224
+                }, 
+                {
+                 "class":"Enemy",
+                 "ellipse":true,
+                 "height":32,
+                 "id":6,
+                 "name":"Ghost",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":96,
+                 "y":32
+                }, 
+                {
+                 "class":"Enemy",
+                 "ellipse":true,
+                 "height":32,
+                 "id":7,
+                 "name":"Zombie",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":128,
+                 "y":64
+                }, 
+                {
+                 "class":"Enemy",
+                 "ellipse":true,
+                 "height":32,
+                 "id":8,
+                 "name":"Hell-Hound",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":320,
+                 "y":64
+                }, 
+                {
+                 "class":"Enemy",
+                 "ellipse":true,
+                 "height":32,
+                 "id":9,
+                 "name":"Zombie",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":352,
+                 "y":128
+                }, 
+                {
+                 "class":"Enemy",
+                 "ellipse":true,
+                 "height":32,
+                 "id":10,
+                 "name":"Knight",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":256,
+                 "y":192
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":4,
+ "nextobjectid":11,
+ "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"audio",
+         "type":"string",
+         "value":"town"
+        }, 
+        {
+         "name":"finishRules",
+         "type":"string",
+         "value":"[]"
+        }, 
+        {
+         "name":"startRules",
+         "type":"string",
+         "value":"[]"
+        }],
+ "renderorder":"left-up",
+ "tiledversion":"1.9.2",
+ "tileheight":32,
+ "tilesets":[
+        {
+         "columns":8,
+         "firstgid":1,
+         "image":"..\/..\/assets\/tilesheet.png",
+         "imageheight":256,
+         "imagewidth":256,
+         "margin":0,
+         "name":"tilesheet",
+         "spacing":0,
+         "tilecount":64,
+         "tileheight":32,
+         "tilewidth":32
+        }],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.9",
+ "width":14
+}
