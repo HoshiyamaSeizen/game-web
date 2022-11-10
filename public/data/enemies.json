@@ -5,7 +5,8 @@
 		"hp": 100,
 		"def": 10,
 		"dam": 1,
-		"money": 10
+		"money": 10,
+		"sound": "zombie"
 	},
 	{
 		"name": "Ghost",
@@ -13,7 +14,8 @@
 		"hp": 50,
 		"def": 100,
 		"dam": 50,
-		"money": 10
+		"money": 10,
+		"sound": "ghost"
 	},
 	{
 		"name": "Hell-Hound",
@@ -21,7 +23,8 @@
 		"hp": 100,
 		"def": 10,
 		"dam": 10,
-		"money": 10
+		"money": 10,
+		"sound": "hound"
 	},
 	{
 		"name": "Knight",
@@ -29,7 +32,8 @@
 		"hp": 100,
 		"def": 10,
 		"dam": 10,
-		"money": 100
+		"money": 100,
+		"sound": "halt"
 	},
 	{
 		"name": "Majin",
@@ -37,6 +41,7 @@
 		"hp": 1000,
 		"def": 20,
 		"dam": 50,
-		"money": 10000
+		"money": 10000,
+		"sound": "majin"
 	}
 ]

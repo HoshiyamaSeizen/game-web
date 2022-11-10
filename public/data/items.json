@@ -5,7 +5,8 @@
 		"dam": 30,
 		"cost": 3,
 		"dur": 50,
-		"money": 0
+		"money": 0,
+		"sound": "hitSharp"
 	},
 	{
 		"name": "Katana",
@@ -13,7 +14,8 @@
 		"dam": 40,
 		"cost": 4,
 		"dur": 200,
-		"money": 50
+		"money": 50,
+		"sound": "hitSharp"
 	},
 	{
 		"name": "Club",
@@ -21,7 +23,8 @@
 		"dam": 10,
 		"cost": 3,
 		"dur": 20,
-		"money": 0
+		"money": 0,
+		"sound": "hitBlunt"
 	},
 	{
 		"name": "Fire_Spell",
@@ -29,7 +32,8 @@
 		"dam": 500,
 		"cost": 20,
 		"charges": 1,
-		"money": 100
+		"money": 100,
+		"sound": "spell"
 	},
 	{
 		"name": "Water_Spell",
@@ -37,7 +41,8 @@
 		"dam": 15,
 		"cost": 5,
 		"charges": 1,
-		"money": 0
+		"money": 0,
+		"sound": "spell"
 	},
 	{
 		"name": "Leather_Armor",
