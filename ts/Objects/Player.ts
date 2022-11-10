@@ -24,12 +24,14 @@ export class Player extends GameObject implements Entity {
 	private maxStamina: number;
 	private damage: number;
 	private money: number;
+	private score: number;
 	private name: string;
 	private weapon: Weapon | null = null;
 	private armor: Armor | null = null;
 	private spell: Spell | null = null;
 	private potion: Potion | null = null;
 	private keyItems: string[];
+	private game: Game;
 
 	constructor(
 		mHealth = MAX_HP_DEFAULT,
@@ -46,8 +48,10 @@ export class Player extends GameObject implements Entity {
 		this.mana = mMana;
 		this.damage = damage;
 		this.money = 0;
+		this.score = 0;
 		this.keyItems = [];
 		this.name = 'you';
+		this.game = Game.getInstance();
 	}
 
 	public changeStat(stat: Condition, value: number): void {
@@ -76,6 +80,9 @@ export class Player extends GameObject implements Entity {
 			case Condition.MONEY:
 				this.money = value;
 				break;
+			case Condition.SCORE:
+				this.score = value;
+				break;
 			default:
 				break;
 		}
@@ -86,7 +93,7 @@ export class Player extends GameObject implements Entity {
 		this.movePos(newPos);
 	}
 	public movePos(pos: Position): void {
-		let f = Game.getInstance().getField();
+		let f = this.game.getMapManager().getField();
 
 		if (f.isInField(pos)) {
 			if (f.cellAt(pos).isFree()) {
@@ -98,9 +105,11 @@ export class Player extends GameObject implements Entity {
 				f.cellAt(this.pos).setEntity(npc);
 				f.cellAt(pos).setEntity(this);
 			} else return;
+
 			this.prevDir = findDir(this.pos, pos);
 			this.pos = pos;
-			Game.getInstance().playerActed();
+			this.game.playerActed();
+
 			if (f.cellAt(this.pos).isFinish()) {
 				let transition = f.cellAt(this.pos).getTransition();
 				if (
@@ -108,26 +117,30 @@ export class Player extends GameObject implements Entity {
 					(!transition.followRules || checkFinishRules()) &&
 					(!transition.key || this.keyItems.includes(transition.key))
 				) {
-					Game.getInstance().loadMap(transition.map, new Position(transition.x, transition.y));
+					this.game
+						.getMapManager()
+						.loadMap(transition.map, new Position(transition.x, transition.y));
 				} else if (transition && transition.key && !this.keyItems.includes(transition.key)) {
-					Game.getInstance().pushEvent(
+					this.game.pushEvent(
 						new GameEvent(sourceType.PLAYER, eType.missingKeyItem, transition.key)
 					);
 				} else if (checkFinishRules()) {
-					Game.getInstance().pushEvent(new GameEvent(sourceType.PLAYER, eType.finishEvent));
-					Game.getInstance().endGame();
-				} else
-					Game.getInstance().pushEvent(new GameEvent(sourceType.PLAYER, eType.goalsNotMet));
+					this.game.pushEvent(new GameEvent(sourceType.PLAYER, eType.finishEvent));
+					this.game.endGame();
+				} else this.game.pushEvent(new GameEvent(sourceType.PLAYER, eType.goalsNotMet));
 			} else if (f.cellAt(pos).hasItem()) {
-				Game.getInstance().pushEvent(
+				this.game.pushEvent(
 					new GameEvent(sourceType.PLAYER, eType.findEvent, f.cellAt(pos).getItem()?.getName())
 				);
 			}
 		}
 	}
 	public hit(dir: Direction): void {
-		let f = Game.getInstance().getField();
+		let f = this.game.getMapManager().getField();
 		let hitPos = changePos(this.pos, dir);
+
+		this.game.getAudioManager().playAudio(this.getWeapon()?.getSound() || 'hitHand', 0.5);
+
 		if (f.isInField(hitPos) && !f.cellAt(hitPos).isFree() && f.cellAt(hitPos).isAccessible()) {
 			let ent = f.cellAt(hitPos).getEntity()!;
 			this.hitEntity(ent);
@@ -144,8 +157,8 @@ export class Player extends GameObject implements Entity {
 		if (this.stamina >= requiredSP) {
 			this.stamina -= requiredSP;
 			this.prevDir = findDir(this.pos, e.getPos());
-			Game.getInstance().playerActed();
-			Game.getInstance().pushEvent(
+			this.game.playerActed();
+			this.game.pushEvent(
 				new GameEvent(sourceType.PLAYER, eType.hitEvent, this.name, e.getName(), dealedDamage)
 			);
 			if (this.weapon) this.weapon.decreaseDur();
@@ -153,9 +166,11 @@ export class Player extends GameObject implements Entity {
 		}
 	}
 	public castSpell(dir: Direction): void {
-		let f = Game.getInstance().getField();
+		let f = this.game.getMapManager().getField();
 		let dealedDamage = this.spell ? this.spell.getDamage() : 0;
 		let requiredMP = this.spell ? this.spell.getCost() : 0;
+
+		if (this.getSpell()) this.game.getAudioManager().playAudio(this.getSpell()!.getSound(), 0.5);
 
 		let hitPos = changePos(this.pos, dir);
 		if (f.isInField(hitPos) && !f.cellAt(hitPos).isFree() && f.cellAt(hitPos).isAccessible()) {
@@ -167,8 +182,8 @@ export class Player extends GameObject implements Entity {
 			if (this.mana >= requiredMP && this.spell) {
 				this.mana -= requiredMP;
 				this.prevDir = dir;
-				Game.getInstance().playerActed();
-				Game.getInstance().pushEvent(
+				this.game.playerActed();
+				this.game.pushEvent(
 					new GameEvent(
 						sourceType.PLAYER,
 						eType.castEvent,
@@ -183,7 +198,7 @@ export class Player extends GameObject implements Entity {
 		}
 	}
 	public talk(npc: NPC): void {
-		Game.getInstance().getDialogue().setTarget(npc);
+		this.game.getDialogue().setTarget(npc);
 	}
 	public drinkPotion(): void {
 		if (this.hasPotion()) {
@@ -203,8 +218,8 @@ export class Player extends GameObject implements Entity {
 				this.mana = this.mana + amount >= this.maxMana ? this.maxMana : this.mana + amount;
 				typeStr = 'MP';
 			}
-			Game.getInstance().playerActed();
-			Game.getInstance().pushEvent(
+			this.game.playerActed();
+			this.game.pushEvent(
 				new GameEvent(
 					sourceType.PLAYER,
 					eType.drinkEvent,
@@ -214,19 +229,20 @@ export class Player extends GameObject implements Entity {
 				)
 			);
 			this.potion!.decreaseDur();
+			this.game.getAudioManager().playAudio('potion');
 		}
 	}
 	public getHit(damage: number): void {
 		let recieved = damage - (this.armor ? Math.round(damage / this.armor.getArmor()) : 0);
 		this.health -= recieved;
 		if (this.armor) this.armor!.decreaseDur();
-		Game.getInstance().pushEvent(
+		this.game.pushEvent(
 			new GameEvent(sourceType.PLAYER, eType.getHitEvent, this.name, '', recieved, this.health)
 		);
 		if (this.health <= 0) {
-			Game.getInstance().getField().cellAt(this.pos).setEntity(null);
-			Game.getInstance().pushEvent(new GameEvent(sourceType.PLAYER, eType.deadEvent, this.name));
-			Game.getInstance().endGame();
+			this.game.getMapManager().getField().cellAt(this.pos).setEntity(null);
+			this.game.pushEvent(new GameEvent(sourceType.PLAYER, eType.deadEvent, this.name));
+			this.game.endGame();
 		}
 	}
 	public sleep(): void {
@@ -236,17 +252,18 @@ export class Player extends GameObject implements Entity {
 		if (this.stamina >= this.maxStamina) this.stamina = this.maxStamina;
 		this.mana += 10;
 		if (this.mana >= this.maxMana) this.mana = this.maxMana;
-		Game.getInstance().playerActed();
-		Game.getInstance().pushEvent(new GameEvent(sourceType.PLAYER, eType.restEvent, '', '', 10));
+		this.game.playerActed();
+		this.game.pushEvent(new GameEvent(sourceType.PLAYER, eType.restEvent, '', '', 10));
+		this.game.getAudioManager().playAudio('sleep');
 	}
 
 	public pickUp(): void {
-		let f = Game.getInstance().getField()!;
+		let f = this.game.getMapManager().getField()!;
 		if (f.cellAt(this.pos).hasItem()) {
 			let item = f.cellAt(this.pos).getItem()!;
 			if (item.getMoneyCost() > this.money) {
-				Game.getInstance().playerActed();
-				Game.getInstance().pushEvent(
+				this.game.playerActed();
+				this.game.pushEvent(
 					new GameEvent(sourceType.PLAYER, eType.notEnoughMoney, '', '', item.getMoneyCost())
 				);
 				return;
@@ -254,7 +271,7 @@ export class Player extends GameObject implements Entity {
 			this.money -= item.getMoneyCost();
 			item.setMoneyCost(0);
 			f.cellAt(this.pos).setItem(null);
-			Game.getInstance().removeItem(item);
+			this.game.removeItem(item);
 			if (item instanceof Weapon) {
 				if (this.weapon) this.dropWeapon();
 				this.weapon = item;
@@ -269,60 +286,63 @@ export class Player extends GameObject implements Entity {
 				this.potion = item;
 			} else if (item instanceof KeyItem) {
 				this.keyItems.push(item.getName());
-				Game.getInstance().removeDuplicateKeyItems(item.getName());
+				this.game.removeDuplicateKeyItems(item.getName());
 			}
-			Game.getInstance().playerActed();
-			Game.getInstance().pushEvent(
-				new GameEvent(sourceType.PLAYER, eType.pickUpEvent, item.getName())
-			);
+			this.game.playerActed();
+			this.game.getAudioManager().playAudio('select');
+			this.game.pushEvent(new GameEvent(sourceType.PLAYER, eType.pickUpEvent, item.getName()));
 		}
 	}
 	public dropWeapon(): void {
-		let f = Game.getInstance().getField()!;
+		let f = this.game.getMapManager().getField()!;
 		if (!f.cellAt(this.pos).hasItem() && this.weapon) {
 			f.cellAt(this.pos).setItem(this.weapon);
 			this.weapon.setPos(this.pos);
-			Game.getInstance().addItem(this.weapon);
-			Game.getInstance().pushEvent(
+			this.game.addItem(this.weapon);
+			this.game.pushEvent(
 				new GameEvent(sourceType.PLAYER, eType.dropEvent, this.weapon.getName())
 			);
 			this.weapon = null;
+			this.game.getAudioManager().playAudio('select');
 		}
 	}
 	public dropSpell(): void {
-		let f = Game.getInstance().getField()!;
+		let f = this.game.getMapManager().getField()!;
 		if (!f.cellAt(this.pos).hasItem() && this.spell) {
 			f.cellAt(this.pos).setItem(this.spell);
 			this.spell.setPos(this.pos);
-			Game.getInstance().addItem(this.spell);
-			Game.getInstance().pushEvent(
+			this.game.addItem(this.spell);
+			this.game.pushEvent(
 				new GameEvent(sourceType.PLAYER, eType.dropEvent, this.spell.getName())
 			);
 			this.spell = null;
+			this.game.getAudioManager().playAudio('select');
 		}
 	}
 	public dropPotion(): void {
-		let f = Game.getInstance().getField()!;
+		let f = this.game.getMapManager().getField()!;
 		if (!f.cellAt(this.pos).hasItem() && this.potion) {
 			f.cellAt(this.pos).setItem(this.potion);
 			this.potion.setPos(this.pos);
-			Game.getInstance().addItem(this.potion);
-			Game.getInstance().pushEvent(
+			this.game.addItem(this.potion);
+			this.game.pushEvent(
 				new GameEvent(sourceType.PLAYER, eType.dropEvent, this.potion.getName())
 			);
 			this.potion = null;
+			this.game.getAudioManager().playAudio('select');
 		}
 	}
 	public dropArmor(): void {
-		let f = Game.getInstance().getField()!;
+		let f = this.game.getMapManager().getField()!;
 		if (!f.cellAt(this.pos).hasItem() && this.armor) {
 			f.cellAt(this.pos).setItem(this.armor);
 			this.armor.setPos(this.pos);
-			Game.getInstance().addItem(this.armor);
-			Game.getInstance().pushEvent(
+			this.game.addItem(this.armor);
+			this.game.pushEvent(
 				new GameEvent(sourceType.PLAYER, eType.dropEvent, this.armor.getName())
 			);
 			this.armor = null;
+			this.game.getAudioManager().playAudio('select');
 		}
 	}
 
@@ -386,11 +406,15 @@ export class Player extends GameObject implements Entity {
 		return this.keyItems.length != 0;
 	}
 
+	public getScore(): number {
+		return this.score;
+	}
 	public getMoney(): number {
 		return this.money;
 	}
 	public addMoney(money: number): void {
 		this.money += money;
+		this.score += money;
 	}
 
 	public act(): void {}

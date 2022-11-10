@@ -23,6 +23,9 @@ export class Position {
 		if (this.equals(other)) return 0;
 		else return this.x < other.x || (this.x == other.x && this.y < other.y) ? -1 : 1;
 	}
+	public dist(other: Position): number {
+		return Math.sqrt((this.x - other.x) ** 2 + (this.y - other.y) ** 2);
+	}
 	public toString(): string {
 		return `(${this.x}, ${this.y})`;
 	}

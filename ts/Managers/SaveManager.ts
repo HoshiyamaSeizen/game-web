@@ -1,12 +1,11 @@
-import { Player } from './Objects/Player';
-import { Field } from './Map/Field';
-import { Entity } from './Objects/Entity';
-import { FieldBuilder } from './Builders/FieldBuilder';
-import { Position } from './Positioning';
-import { Game } from './Game';
-import { Condition } from './Rules/GameRule';
-import { Item, Spell, Weapon, Armor, Potion } from './Objects/Item';
-import { NPC } from './Objects/NPC';
+import { Player } from '../Objects/Player';
+import { Field } from '../Map/Field';
+import { Entity } from '../Objects/Entity';
+import { Position } from '../Positioning';
+import { Game } from '../Game';
+import { Condition } from '../Rules/GameRule';
+import { Item, Spell, Weapon, Armor, Potion } from '../Objects/Item';
+import { NPC } from '../Objects/NPC';
 
 export class SaveManager {
 	public save(saveIndex: number): Boolean {
@@ -24,6 +23,7 @@ export class SaveManager {
 					sp: 0,
 					mp: 0,
 					money: 0,
+					score: 0,
 					weapon: {
 						name: '',
 						dur: 0,
@@ -52,7 +52,7 @@ export class SaveManager {
 			let items = game.getItems();
 			let player = game.getPlayer();
 
-			save.map = Game.getInstance().getCurrentMap();
+			save.map = Game.getInstance().getMapManager().getCurrentMap();
 
 			let count = 0;
 			let pos: Position;
@@ -90,6 +90,7 @@ export class SaveManager {
 				sp: player.getSP(),
 				mp: player.getMP(),
 				money: player.getMoney(),
+				score: player.getScore(),
 				weapon: player.hasWeapon()
 					? {
 							name: player.getWeapon()!.getName(),
@@ -141,12 +142,12 @@ export class SaveManager {
 
 			let game = Game.getInstance();
 			let storage = game.getStorage();
-			let builder = new FieldBuilder(true);
-			builder.buildPresetMap(save.map, storage);
+			let builder = Game.getInstance().getMapManager();
+
+			builder.parseMap(save.map, storage, true);
 
 			let entities: Entity[] = [];
 			let items: Item[] = [];
-			let field: Field;
 			let player: Player;
 
 			let pos: Position;
@@ -188,8 +189,7 @@ export class SaveManager {
 			player.changeStat(Condition.MP, save.player.mp);
 			player.changeStat(Condition.SP, save.player.sp);
 			player.changeStat(Condition.MONEY, save.player.money);
-
-			field = builder.getField();
+			player.changeStat(Condition.SCORE, save.player.score);
 
 			let item = save.player.weapon;
 			if (item.name != 'None') {
@@ -233,7 +233,7 @@ export class SaveManager {
 
 			player.setKeyItems(save.player.keyItems);
 
-			game.setMap(save.map, field, entities, items, player);
+			game.setObjects(entities, items, player);
 			game.msg(`Save ${saveIndex} loaded\n`);
 			return true;
 		} catch (e) {
@@ -259,6 +259,7 @@ type saveStructure = {
 		sp: number;
 		mp: number;
 		money: number;
+		score: number;
 		weapon: { name: string; dur: number; money: number };
 		spell: { name: string; dur: number; money: number };
 		armor: { name: string; dur: number; money: number };

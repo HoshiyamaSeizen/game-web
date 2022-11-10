@@ -1,4 +1,5 @@
-import { Sprite } from './../Storage';
+import { Position } from './../Positioning';
+import { Sprite } from '../Managers/SpriteManager';
 
 export class Drawable {
 	protected sprite?: Sprite;
@@ -15,5 +16,16 @@ export class Drawable {
 	}
 	public setUSprite(sprite: Sprite): void {
 		this.spriteWhenUsed = sprite;
+	}
+}
+
+export class MapDrawable {
+	protected tilePos?: Position;
+
+	public getTilePos(): Position {
+		return this.tilePos!;
+	}
+	public setTilePos(tilePos: Position): void {
+		this.tilePos = tilePos;
 	}
 }

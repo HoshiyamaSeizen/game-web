@@ -95,7 +95,7 @@ export class PatrolStrategy implements Strategy {
 			this.entity.hitEntity(player);
 			return;
 		} else {
-			let f = Game.getInstance().getField();
+			let f = Game.getInstance().getMapManager().getField();
 			for (let i = 0; i < 4; i++) {
 				let newPos = changePos(pos, this.dir);
 				if (f.isInField(newPos) && !f.cellAt(newPos).isFree()) {
@@ -114,7 +114,7 @@ function bfsToPosition(maxDistance: number, start: Position, end: Position): Pos
 	let queue: Position[] = [];
 	let visited = new Map<Position, Position>();
 
-	let f = Game.getInstance().getField()!;
+	let f = Game.getInstance().getMapManager().getField()!;
 	let current = start;
 	let tmp: Position;
 	let distance = 0;

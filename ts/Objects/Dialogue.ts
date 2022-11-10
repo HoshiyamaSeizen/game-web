@@ -1,4 +1,4 @@
-import { NPC, TalkType } from './Objects/NPC';
+import { NPC, TalkType } from './NPC';
 
 export class Dialogue {
 	private target: NPC | null;

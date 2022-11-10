@@ -1,5 +1,5 @@
 import { NPC } from './../Objects/NPC';
-import { Drawable } from './../Objects/Drawable';
+import { MapDrawable } from './../Objects/Drawable';
 import { Enemy } from './../Objects/Enemy';
 import { Player } from './../Objects/Player';
 import { Entity } from '../Objects/Entity';
@@ -11,7 +11,7 @@ export enum State {
 	finish,
 }
 
-export class Cell extends Drawable {
+export class Cell extends MapDrawable {
 	private accessible: Boolean;
 	private state: State;
 	private entity: Entity | null;

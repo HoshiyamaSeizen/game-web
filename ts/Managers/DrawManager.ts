@@ -1,15 +1,13 @@
-import { Enemy } from './Objects/Enemy';
-import { Game } from './Game';
-import { Field } from './Map/Field';
-import { Sprite } from './Storage';
-import { Item } from './Objects/Item';
-import { Position } from './Positioning';
-import { Entity } from './Objects/Entity';
-import { finishRulesToString } from './Rules/RuleChecker';
+import { SpriteManager, Sprite, spriteSize } from './SpriteManager';
+import { Enemy } from '../Objects/Enemy';
+import { Game } from '../Game';
+import { Field } from '../Map/Field';
+import { Item } from '../Objects/Item';
+import { Position } from '../Positioning';
+import { Entity } from '../Objects/Entity';
+import { finishRulesToString } from '../Rules/RuleChecker';
 
-const spriteSize = 32;
-
-export class Drawer {
+export class DrawManager {
 	private animState = {
 		secondAnimFrame: false,
 		playerResting: false,
@@ -20,6 +18,18 @@ export class Drawer {
 	private canvas: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D;
 	private scaledSpriteSize: number;
+	private spriteManager: SpriteManager;
+	private spriteSheet: HTMLImageElement;
+	private tilesheet: HTMLImageElement;
+
+	constructor() {
+		this.canvas = <HTMLCanvasElement>document.getElementById('canvas')!;
+		this.ctx = this.canvas.getContext('2d')!;
+		this.scaledSpriteSize = this.animState.scale * spriteSize;
+		this.spriteManager = Game.getInstance().getSpriteManager();
+		this.spriteSheet = this.spriteManager.getSpriteSheet();
+		this.tilesheet = Game.getInstance().getMapManager().getTileSheet();
+	}
 
 	private drawItem(item: Item, xAbs: number, yAbs: number): void {
 		this.drawSprite(item.getSprite(), xAbs, yAbs);
@@ -40,7 +50,7 @@ export class Drawer {
 	}
 	private drawEntity(entity: Entity, xAbs: number, yAbs: number): void {
 		let sprite = entity.getSprite();
-		sprite.pos = new Position(+entity.getDir() % 4, +this.animState.secondAnimFrame);
+		sprite.offset = new Position(+entity.getDir() % 4, +this.animState.secondAnimFrame);
 		this.drawSprite(sprite, xAbs, yAbs);
 
 		if (entity instanceof Enemy && entity.getHP() < entity.getmaxHP()) {
@@ -69,14 +79,14 @@ export class Drawer {
 		let p = Game.getInstance().getPlayer();
 		let sprite = p.getSprite();
 
-		if (this.animState.playerResting) sprite.pos = new Position(0, 2);
-		else if (this.animState.playerDropping) sprite.pos = new Position(1, 2);
-		else if (this.animState.playerDrinking) sprite.pos = new Position(2, 2);
-		else sprite.pos = new Position(+p.getDir() % 4, +this.animState.secondAnimFrame);
+		if (this.animState.playerResting) sprite.offset = new Position(0, 2);
+		else if (this.animState.playerDropping) sprite.offset = new Position(1, 2);
+		else if (this.animState.playerDrinking) sprite.offset = new Position(2, 2);
+		else sprite.offset = new Position(+p.getDir() % 4, +this.animState.secondAnimFrame);
 		this.drawSprite(sprite, xAbs, yAbs);
 
 		if (p.hasArmor()) {
-			p.getArmor()!.getUSprite().pos = sprite.pos;
+			p.getArmor()!.getUSprite().offset = sprite.offset;
 			this.drawSprite(p.getArmor()?.getUSprite()!, xAbs, yAbs);
 		}
 		if (
@@ -85,20 +95,20 @@ export class Drawer {
 			!this.animState.playerDrinking
 		) {
 			if (p.hasWeapon()) {
-				p.getWeapon()!.getUSprite().pos = sprite.pos;
+				p.getWeapon()!.getUSprite().offset = sprite.offset;
 				this.drawSprite(p.getWeapon()?.getUSprite()!, xAbs, yAbs);
 			}
 			if (p.hasSpell()) {
-				p.getSpell()!.getUSprite().pos = sprite.pos;
+				p.getSpell()!.getUSprite().offset = sprite.offset;
 				this.drawSprite(p.getSpell()?.getUSprite()!, xAbs, yAbs);
 			}
 		}
 	}
 	private drawSprite(sprite: Sprite, xAbs: number, yAbs: number): void {
 		this.ctx.drawImage(
-			sprite.source,
-			sprite.pos.x * spriteSize,
-			sprite.pos.y * spriteSize,
+			this.spriteSheet,
+			(sprite.pos.x + sprite.offset.x) * spriteSize,
+			(sprite.pos.y + sprite.offset.y) * spriteSize,
 			spriteSize,
 			spriteSize,
 			xAbs,
@@ -108,10 +118,18 @@ export class Drawer {
 		);
 	}
 
-	constructor() {
-		this.canvas = <HTMLCanvasElement>document.getElementById('canvas')!;
-		this.ctx = this.canvas.getContext('2d')!;
-		this.scaledSpriteSize = this.animState.scale * spriteSize;
+	private drawTile(pos: Position, xAbs: number, yAbs: number): void {
+		this.ctx.drawImage(
+			this.tilesheet,
+			pos.x * spriteSize,
+			pos.y * spriteSize,
+			spriteSize,
+			spriteSize,
+			xAbs,
+			yAbs,
+			spriteSize * this.animState.scale,
+			spriteSize * this.animState.scale
+		);
 	}
 
 	private noSmoothing(): void {
@@ -135,7 +153,7 @@ export class Drawer {
 				x = i * this.scaledSpriteSize + offsetX;
 				y = j * this.scaledSpriteSize + offsetY;
 				let pos = new Position(i, j);
-				this.drawSprite(f.cellAt(pos).getSprite(), x, y);
+				this.drawTile(f.cellAt(pos).getTilePos(), x, y);
 				if (f.cellAt(pos).hasItem()) this.drawItem(f.cellAt(pos).getItem()!, x, y);
 				if (f.cellAt(pos).isEntityEnemy() || f.cellAt(pos).isEntityNPC())
 					this.drawEntity(f.cellAt(pos).getEntity()!, x, y);
@@ -162,8 +180,10 @@ export class Drawer {
 		this.ctx.fillText(text, 10, 125);
 		text = `Money: ${p.getMoney()}`;
 		this.ctx.fillText(text, 10, 150);
+		text = `Score: ${p.getScore()}`;
+		this.ctx.fillText(text, 10, 175);
 
-		let k = 195,
+		let k = 220,
 			count = 0;
 		finishRulesToString().forEach((rule) => {
 			this.ctx.fillText(rule, 30, k);
@@ -171,7 +191,7 @@ export class Drawer {
 			count++;
 		});
 		text = `Goals: ${count ? '' : 'None'}`;
-		this.ctx.fillText(text, 10, 175);
+		this.ctx.fillText(text, 10, 200);
 	}
 	public drawLog(): void {
 		this.ctx.font = '16px PixeloidSans';
@@ -182,7 +202,7 @@ export class Drawer {
 		Game.getInstance()
 			.getEvents()
 			.forEach((e) => {
-				text = e.toString();
+				text = e.toString().replace('_', ' ');
 				this.ctx.fillText(text, this.canvas.width - this.ctx.measureText(text).width - 10, y);
 				y += 20;
 			});
@@ -270,13 +290,6 @@ export class Drawer {
 		else if (newScale > 5) this.animState.scale = 5;
 		else this.animState.scale = newScale;
 		this.scaledSpriteSize = this.animState.scale * spriteSize;
-	}
-	public setPlayerSprite(): void {
-		let image = new Image();
-		image.src = 'assets/objects/Player.png';
-		Game.getInstance()
-			.getPlayer()
-			.setSprite({ source: image, pos: new Position(0, 0) });
 	}
 	public addResizeListener(): void {
 		const resize = () => {

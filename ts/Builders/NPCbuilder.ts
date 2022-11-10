@@ -5,17 +5,20 @@ import {
 	Strategy,
 	WanderStrategy,
 } from '../Objects/Strategy';
-import { Sprite } from '../Storage';
 import { NPC, TalkType } from './../Objects/NPC';
 import { Builder } from './Builder';
 
 import npcs from '../../public/data/npcs.json';
 import { Position } from '../Positioning';
+import { Sprite, SpriteManager } from '../Managers/SpriteManager';
+import { Game } from '../Game';
 
 export class NPCBuilder implements Builder {
 	private npc: NPC;
+	private spriteManager: SpriteManager;
 	constructor() {
 		this.npc = new NPC();
+		this.spriteManager = Game.getInstance().getSpriteManager();
 	}
 	public setStrategy(strategy: Strategy): void {
 		this.npc.changeStrategy(strategy);
@@ -45,9 +48,7 @@ export class NPCBuilder implements Builder {
 		else if (npcInfo.strategy == 'hunt') this.setStrategy(new HuntStrategy(this.npc));
 		else if (npcInfo.strategy == 'patrol') this.setStrategy(new PatrolStrategy(this.npc));
 
-		let image = new Image();
-		image.src = `assets/objects/entities/${npcInfo.name}.png`;
-		this.setSprite({ source: image, pos: new Position(0, 0) });
+		this.setSprite(this.spriteManager.getSprite(npcInfo.name));
 	}
 
 	public getPresetNPC(name: string): NPC {

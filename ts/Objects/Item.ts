@@ -21,12 +21,14 @@ export class Weapon extends GameObject implements Item {
 	private durability: number;
 	private name: string;
 	private moneyCost = 0;
+	private sound = '';
 
-	constructor(damage = 1, cost = 1, durability = 10) {
+	constructor(damage = 1, cost = 1, durability = 10, sound = '') {
 		super();
 		this.damage = damage;
 		this.cost = cost;
 		this.durability = durability;
+		this.sound = sound;
 		this.name = 'Weapon';
 	}
 	public getName(): string {
@@ -67,7 +69,9 @@ export class Weapon extends GameObject implements Item {
 	public getMoneyCost(): number {
 		return this.moneyCost;
 	}
-
+	public getSound(): string {
+		return this.sound;
+	}
 	public decreaseDur(): void {
 		this.durability--;
 		if (this.durability <= 0) {
@@ -85,6 +89,7 @@ export class Weapon extends GameObject implements Item {
 		item.sprite = this.sprite;
 		item.spriteWhenUsed = this.spriteWhenUsed;
 		item.moneyCost = this.moneyCost;
+		item.sound = this.sound;
 		return item;
 	}
 }
@@ -95,12 +100,14 @@ export class Spell extends GameObject implements Item {
 	private charges: number;
 	private name: string;
 	private moneyCost = 0;
+	private sound = '';
 
-	constructor(damage = 1, cost = 1, charges = 1) {
+	constructor(damage = 1, cost = 1, charges = 1, sound = '') {
 		super();
 		this.damage = damage;
 		this.cost = cost;
 		this.charges = charges;
+		this.sound = sound;
 		this.name = 'Spell';
 	}
 	public getName(): string {
@@ -141,7 +148,6 @@ export class Spell extends GameObject implements Item {
 	public getMoneyCost(): number {
 		return this.moneyCost;
 	}
-
 	public decreaseDur(): void {
 		this.charges--;
 		if (this.charges <= 0) {
@@ -154,6 +160,9 @@ export class Spell extends GameObject implements Item {
 	}
 	public changeName(name: string): void {
 		this.name = name;
+	}
+	public getSound(): string {
+		return this.sound;
 	}
 	public clone(): Item {
 		let item = new Spell(this.damage, this.cost, this.charges);

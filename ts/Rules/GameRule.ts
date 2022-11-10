@@ -21,6 +21,7 @@ export enum Condition {
 	PRICE,
 	COUNT,
 	KILL,
+	SCORE,
 }
 
 export class GameRule {

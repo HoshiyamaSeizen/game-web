@@ -5,10 +5,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Game</title>
-		<link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png" />
-		<link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png" />
-		<link rel="manifest" href="./favicon/site.webmanifest" />
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
@@ -17,11 +14,32 @@
 				<canvas id="canvas" width="1000" height="1000"></canvas>
 				<div id="menu-overlay">
 					<h1 id="game-result" hidden></h1>
+					<form id="form" hidden>
+						<label for="username">Your name: </label>
+						<input id="username" type="text" name="username" value="..." />
+						<button id="btn-end" type="submit">Submit</button>
+					</form>
 				</div>
 			</div>
 			<div id="game-menu">
 				<h1 id="game-menu-title">Game</h1>
 				<div id="controls-list"></div>
+				<div id="leaderboard" hidden="true">
+					<table>
+						<thead>
+							<th>Place</th>
+							<th>Name</th>
+							<th>Score</th>
+						</thead>
+						<tbody id="tbody"></tbody>
+					</table>
+				</div>
+				<div id="audioOptions" hidden="true">
+					<label for="sfx">Sound Effects</label>
+					<input type="range" name="sfx" id="range-sfx" min="0" max="1" value="1" step="0.1" />
+					<label for="bg">Background Music</label>
+					<input type="range" name="bg" id="range-bg" min="0" max="1" value="1" step="0.1" />
+				</div>
 			</div>
 		</div>
 		<script src="bundle.js"></script>

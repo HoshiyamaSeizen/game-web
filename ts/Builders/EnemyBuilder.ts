@@ -5,17 +5,19 @@ import {
 	HuntStrategy,
 	PatrolStrategy,
 } from './../Objects/Strategy';
-import { Sprite } from './../Storage';
 import { Enemy } from './../Objects/Enemy';
 import { Builder } from './Builder';
+import { SpriteManager, Sprite } from '../Managers/SpriteManager';
 
 import enemies from '../../public/data/enemies.json';
-import { Position } from '../Positioning';
+import { Game } from '../Game';
 
 export class EnemyBuilder implements Builder {
 	private enemy: Enemy;
+	private spriteManager: SpriteManager;
 	constructor() {
 		this.enemy = new Enemy();
+		this.spriteManager = Game.getInstance().getSpriteManager();
 	}
 	public setStrategy(strategy: Strategy): void {
 		this.enemy.changeStrategy(strategy);
@@ -29,6 +31,9 @@ export class EnemyBuilder implements Builder {
 	public setSprite(sprite: Sprite): void {
 		this.enemy.setSprite(sprite);
 	}
+	public setSound(name: string): void {
+		this.enemy.setSound(name);
+	}
 	public buildPresetEnemy(name: string): void {
 		let enemyInfo = enemies.find((enemy) => enemy.name == name)!;
 		this.setStats(enemyInfo.hp, enemyInfo.def, enemyInfo.dam, enemyInfo.money);
@@ -39,9 +44,9 @@ export class EnemyBuilder implements Builder {
 		else if (enemyInfo.strategy == 'hunt') this.setStrategy(new HuntStrategy(this.enemy));
 		else if (enemyInfo.strategy == 'patrol') this.setStrategy(new PatrolStrategy(this.enemy));
 
-		let image = new Image();
-		image.src = `assets/objects/entities/${enemyInfo.name}.png`;
-		this.setSprite({ source: image, pos: new Position(0, 0) });
+		this.setSprite(this.spriteManager.getSprite(enemyInfo.name));
+
+		this.setSound(enemyInfo.sound);
 	}
 
 	public getPresetEnemy(name: string): Enemy {

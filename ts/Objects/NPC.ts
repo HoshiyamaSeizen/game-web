@@ -35,7 +35,7 @@ export class NPC extends GameObject implements Entity {
 		this.movePos(newPos);
 	}
 	public movePos(pos: Position): void {
-		let f = Game.getInstance().getField();
+		let f = Game.getInstance().getMapManager().getField();
 		if (f.isInField(pos) && f.cellAt(pos).isFree()) {
 			f.cellAt(this.pos).setEntity(null);
 			f.cellAt(pos).setEntity(this);

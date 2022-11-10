@@ -1,7 +1,7 @@
-import { Game } from './Game';
-import { Direction, CalcDir } from './Positioning';
+import { Game } from '../Game';
+import { Direction, CalcDir } from '../Positioning';
 
-import _controls from '../public/controls.json';
+import _controls from '../../public/data/controls.json';
 
 export enum ACTION {
 	UP = 'UP',
@@ -23,13 +23,43 @@ export enum ACTION {
 	END = 'END',
 }
 
-export class Controller {
-	private controls: { [key: string]: string };
+export class EventManager {
+	private controls: { [key: string]: string } = _controls;
 	private action: ACTION | null = null;
 	private dir: Direction | null = null;
-	private pressed: Set<string>;
-	private currentlyPressed: Set<string>;
-	private actionGiven: Boolean;
+	private pressed: Set<string> = new Set();
+	private currentlyPressed: Set<string> = new Set();
+	private actionGiven = false;
+
+	constructor() {
+		document.addEventListener('keydown', (e) => this.readInput(e));
+		document.addEventListener('keyup', (e) => this.readInput(e, false));
+
+		const canvas = <HTMLCanvasElement>document.getElementById('canvas')!;
+		canvas.onwheel = (e) => this.readInput(e);
+
+		this.initControlsList();
+	}
+
+	public readInput(e: Event, keyDown = true) {
+		if (!Game.getInstance().isActive()) return;
+		if (e instanceof KeyboardEvent) {
+			let code = e.code;
+			if (keyDown) {
+				if (e.ctrlKey || e.altKey) return;
+				this.pressed.add(code);
+				this.currentlyPressed.add(code);
+			} else {
+				this.currentlyPressed.delete(code);
+				if (!this.currentlyPressed.size) this.processInput();
+			}
+		} else if (e instanceof WheelEvent) {
+			e.preventDefault();
+			e.stopPropagation();
+			Game.getInstance().changeScale(-e.deltaY / 50);
+		}
+	}
+
 	private isKeyPressed(action: ACTION): Boolean {
 		return this.pressed.has(this.controls[<string>action]);
 	}
@@ -38,21 +68,14 @@ export class Controller {
 		let dialogue = Game.getInstance().getDialogue();
 
 		if (menu.opened()) {
-			if (this.pressed.has('Escape')) {
-				menu.processEscape();
-			} else if (this.pressed.has('Enter')) {
-				this.click(menu.getFocusedButton());
-			} else if (this.pressed.has('ArrowUp') || this.pressed.has('ArrowLeft')) {
-				menu.prevButton();
-			} else if (this.pressed.has('ArrowDown') || this.pressed.has('ArrowRight')) {
+			if (this.pressed.has('Escape')) menu.processEscape();
+			else if (this.pressed.has('Enter')) this.click(menu.getFocusedButton());
+			else if (this.pressed.has('ArrowUp') || this.pressed.has('ArrowLeft')) menu.prevButton();
+			else if (this.pressed.has('ArrowDown') || this.pressed.has('ArrowRight'))
 				menu.nextButton();
-			}
 		} else if (dialogue.opened()) {
-			if (this.pressed.has('Escape') || !dialogue.shouldProceed()) {
-				dialogue.close();
-			} else {
-				dialogue.next();
-			}
+			if (this.pressed.has('Escape') || !dialogue.shouldProceed()) dialogue.close();
+			else dialogue.next();
 		} else {
 			this.actionGiven = true;
 
@@ -86,32 +109,6 @@ export class Controller {
 		this.pressed.clear();
 	}
 
-	constructor() {
-		this.controls = _controls;
-		this.pressed = new Set();
-		this.currentlyPressed = new Set();
-		this.actionGiven = false;
-
-		document.addEventListener('keydown', (e) => this.readInput(e));
-		document.addEventListener('keyup', (e) => this.readInput(e, false));
-		document.onwheel = (e) => this.readInput(e);
-	}
-	public readInput(e: Event, keyDown = true) {
-		if (!Game.getInstance().isActive()) return;
-		if (e instanceof KeyboardEvent) {
-			let code = e.code;
-			if (keyDown) {
-				if (e.ctrlKey || e.altKey) return;
-				this.pressed.add(code);
-				this.currentlyPressed.add(code);
-			} else {
-				this.currentlyPressed.delete(code);
-				if (!this.currentlyPressed.size) this.processInput();
-			}
-		} else if (e instanceof WheelEvent) {
-			Game.getInstance().changeScale(e.deltaY / 50);
-		}
-	}
 	public getAction(): ACTION | null {
 		return this.action;
 	}
@@ -129,7 +126,7 @@ export class Controller {
 		return this.controls[<string>action];
 	}
 
-	public getControlsString(): string[] {
+	public initControlsList(): void {
 		let arr: string[] = [];
 		arr.push(
 			`Move: ${this.getActionControls(ACTION.UP)}, ${this.getActionControls(
@@ -147,7 +144,11 @@ export class Controller {
 		arr.push(`Drop potion: ${this.getActionControls(ACTION.DROP_P)}`);
 		arr.push(`Quick save: ${this.getActionControls(ACTION.QSAVE)}`);
 		arr.push(`Quick load: ${this.getActionControls(ACTION.QLOAD)}`);
-		return arr;
+		arr.forEach((s) => {
+			let p = document.createElement('p');
+			p.innerHTML = s;
+			document.getElementById('controls-list')!.appendChild(p);
+		});
 	}
 
 	private click(element: HTMLElement): void {

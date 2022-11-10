@@ -16,6 +16,7 @@ export class Enemy extends GameObject implements Entity {
 	private armor: number;
 	private damage: number;
 	private reward = 0;
+	private sound = '';
 	constructor(maxHealth = 1, armor = 1, damage = 1, reward = 0) {
 		super();
 		this.health = maxHealth;
@@ -57,7 +58,7 @@ export class Enemy extends GameObject implements Entity {
 		this.movePos(newPos);
 	}
 	public movePos(pos: Position): void {
-		let f = Game.getInstance().getField();
+		let f = Game.getInstance().getMapManager().getField();
 		if (f.isInField(pos) && f.cellAt(pos).isFree()) {
 			f.cellAt(this.pos).setEntity(null);
 			f.cellAt(pos).setEntity(this);
@@ -66,7 +67,7 @@ export class Enemy extends GameObject implements Entity {
 		}
 	}
 	public hit(dir: Direction): void {
-		let f = Game.getInstance().getField();
+		let f = Game.getInstance().getMapManager().getField();
 		let hitPos = changePos(this.pos, dir);
 		if (f.isInField(hitPos) && !f.cellAt(hitPos).isFree() && f.cellAt(hitPos).isAccessible()) {
 			this.hitEntity(f.cellAt(hitPos).getEntity()!);
@@ -80,17 +81,19 @@ export class Enemy extends GameObject implements Entity {
 		e.getHit(this.damage);
 	}
 	public getHit(damage: number): void {
+		const game = Game.getInstance();
 		let recieved = damage - (this.armor ? Math.floor(damage / this.armor--) : 0);
 		this.health -= recieved;
-		Game.getInstance().pushEvent(
+		game.pushEvent(
 			new GameEvent(sourceType.ENEMY, eType.getHitEvent, this.name, '', recieved, this.health)
 		);
 
 		if (this.health <= 0) {
-			Game.getInstance().getField().cellAt(this.pos).setEntity(null);
-			Game.getInstance().removeEntity(this);
-			Game.getInstance().pushEvent(new GameEvent(sourceType.ENEMY, eType.deadEvent, this.name));
-			Game.getInstance().getPlayer().addMoney(this.reward);
+			game.getAudioManager().playAudio('kill', 0.5);
+			game.getMapManager().getField().cellAt(this.pos).setEntity(null);
+			game.removeEntity(this);
+			game.pushEvent(new GameEvent(sourceType.ENEMY, eType.deadEvent, this.name));
+			game.getPlayer().addMoney(this.reward);
 		}
 	}
 
@@ -112,12 +115,19 @@ export class Enemy extends GameObject implements Entity {
 	public getReward(): number {
 		return this.reward;
 	}
+	public setSound(name: string): void {
+		this.sound = name;
+	}
+	public getSound(): string {
+		return this.sound;
+	}
 	public clone(): Entity {
 		let newEnemy = new Enemy(this.maxHealth, this.armor, this.damage, this.reward);
 		newEnemy.strategy = this.strategy!.clone(newEnemy);
 		newEnemy.sprite = this.sprite!;
 		newEnemy.prevDir = this.prevDir;
 		newEnemy.name = this.name;
+		newEnemy.sound = this.sound;
 		return newEnemy;
 	}
 }

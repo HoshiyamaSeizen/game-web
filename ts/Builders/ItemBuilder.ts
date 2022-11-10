@@ -1,20 +1,22 @@
 import { Item, Weapon, pType, Spell, Potion, Armor, KeyItem } from './../Objects/Item';
-import { Sprite } from './../Storage';
 import { Builder } from './Builder';
 
 import items from '../../public/data/items.json';
-import { Position } from '../Positioning';
+import { SpriteManager, Sprite } from '../Managers/SpriteManager';
+import { Game } from '../Game';
 
 export class ItemBuilder implements Builder {
 	private item: Item;
+	private spriteManager: SpriteManager;
 	constructor() {
 		this.item = new Weapon();
+		this.spriteManager = Game.getInstance().getSpriteManager();
 	}
-	public newWeapon(damage = 1, cost = 1, durability = 10): void {
-		this.item = new Weapon(damage, cost, durability);
+	public newWeapon(damage = 1, cost = 1, durability = 10, sound = ''): void {
+		this.item = new Weapon(damage, cost, durability, sound);
 	}
-	public newSpell(damage = 1, cost = 1, charges = 1): void {
-		this.item = new Spell(damage, cost, charges);
+	public newSpell(damage = 1, cost = 1, charges = 1, sound = ''): void {
+		this.item = new Spell(damage, cost, charges, sound);
 	}
 	public newPotion(type = pType.HP, amount = 50): void {
 		this.item = new Potion(type, amount);
@@ -40,9 +42,10 @@ export class ItemBuilder implements Builder {
 	public buildPresetItem(name: string): void {
 		let itemInfo = items.find((item) => item.name == name)!;
 
-		if (itemInfo.type == 'weapon') this.newWeapon(itemInfo.dam, itemInfo.cost, itemInfo.dur);
+		if (itemInfo.type == 'weapon')
+			this.newWeapon(itemInfo.dam, itemInfo.cost, itemInfo.dur, itemInfo.sound);
 		else if (itemInfo.type == 'spell')
-			this.newSpell(itemInfo.dam, itemInfo.cost, itemInfo.charges);
+			this.newSpell(itemInfo.dam, itemInfo.cost, itemInfo.charges, itemInfo.sound);
 		else if (itemInfo.type == 'armor') this.newArmor(itemInfo.armor, itemInfo.dur);
 		else if (itemInfo.type == 'potion') {
 			let type =
@@ -53,17 +56,10 @@ export class ItemBuilder implements Builder {
 		this.setName(itemInfo.name);
 		this.setCost(itemInfo.money);
 
-		let image = new Image();
-		image.src = `assets/objects/items/${itemInfo.name}.png`;
-		this.setSprite({ source: image, pos: new Position(0, 0) });
+		this.setSprite(this.spriteManager.getSprite(itemInfo.name));
 
-		image = new Image();
-		if (itemInfo.type == 'weapon' || itemInfo.type == 'spell') {
-			image.src = `assets/objects/items/tool/${itemInfo.name}.png`;
-			this.setUSprite({ source: image, pos: new Position(0, 0) });
-		} else if (itemInfo.type == 'armor') {
-			image.src = `assets/objects/items/armor/${itemInfo.name}.png`;
-			this.setUSprite({ source: image, pos: new Position(0, 0) });
+		if (itemInfo.type == 'weapon' || itemInfo.type == 'spell' || itemInfo.type == 'armor') {
+			this.setUSprite(this.spriteManager.getSprite(`${itemInfo.name}.anim`));
 		}
 	}
 
